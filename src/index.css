@@ -2,104 +2,162 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* =========================================================
+   INVOICE DESK — Ledger Modern design system
+   Sharp, technical, precise. Editorial Swiss / financial tool.
+   All colors are HSL. No purple. No gradients. One hairline.
+   ========================================================= */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Paper canvas, ink, single graphite accent */
+    --paper:           42 28% 97%;   /* warm off-white app canvas */
+    --paper-edge:      40 14% 92%;   /* rule lines on canvas */
+    --ink:             220 18% 11%;  /* near-black text */
+    --ink-soft:        220 10% 32%;  /* secondary text */
+    --ink-mute:        220 8%  52%;  /* tertiary text / labels */
+    --ink-faint:       220 8%  72%;  /* placeholder, disabled */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --rule:            220 12% 86%;  /* hairline */
+    --rule-strong:     220 14% 70%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --surface:         0 0% 100%;    /* card / sheet */
+    --surface-sunk:    42 18% 95%;   /* table head, input */
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --accent:          18 24% 28%;   /* warm graphite — used sparingly */
+    --accent-soft:     18 18% 92%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --positive:        152 32% 32%;
+    --warning:         32 70% 42%;
+    --danger:          4 60% 45%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* shadcn semantic token mapping */
+    --background: var(--paper);
+    --foreground: var(--ink);
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --card: var(--surface);
+    --card-foreground: var(--ink);
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --popover: var(--surface);
+    --popover-foreground: var(--ink);
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --primary: var(--ink);
+    --primary-foreground: 42 28% 97%;
 
-    --radius: 0.5rem;
+    --secondary: var(--surface-sunk);
+    --secondary-foreground: var(--ink);
 
-    --sidebar-background: 0 0% 98%;
+    --muted: var(--surface-sunk);
+    --muted-foreground: var(--ink-mute);
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    --accent-foreground: 42 28% 97%;
 
-    --sidebar-primary: 240 5.9% 10%;
+    --destructive: var(--danger);
+    --destructive-foreground: 0 0% 100%;
 
-    --sidebar-primary-foreground: 0 0% 98%;
+    --border: var(--rule);
+    --input: var(--rule);
+    --ring: var(--ink);
 
-    --sidebar-accent: 240 4.8% 95.9%;
+    --radius: 4px;
 
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-background: 42 24% 96%;
+    --sidebar-foreground: var(--ink);
+    --sidebar-primary: var(--ink);
+    --sidebar-primary-foreground: 42 28% 97%;
+    --sidebar-accent: 42 18% 92%;
+    --sidebar-accent-foreground: var(--ink);
+    --sidebar-border: var(--rule);
+    --sidebar-ring: var(--ink);
 
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Type scale — UI app, not marketing. rem-based. */
+    --font-display: 'Fraunces', ui-serif, Georgia, serif;
+    --font-sans: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-hand: 'Caveat', cursive;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Provided so shadcn primitives don't break; app is light-first. */
+    --background: 220 18% 8%;
+    --foreground: 42 18% 92%;
+    --card: 220 18% 10%;
+    --card-foreground: 42 18% 92%;
+    --popover: 220 18% 10%;
+    --popover-foreground: 42 18% 92%;
+    --primary: 42 18% 92%;
+    --primary-foreground: 220 18% 11%;
+    --secondary: 220 14% 14%;
+    --secondary-foreground: 42 18% 92%;
+    --muted: 220 14% 14%;
+    --muted-foreground: 220 8% 62%;
+    --accent: 220 14% 14%;
+    --accent-foreground: 42 18% 92%;
+    --destructive: 4 60% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 14% 18%;
+    --input: 220 14% 18%;
+    --ring: 42 18% 92%;
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
+  * { @apply border-border; }
+
+  html, body {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11", "tnum";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
-  body {
-    @apply bg-background text-foreground;
+  /* Numerals always tabular */
+  .num, table, .font-mono { font-variant-numeric: tabular-nums; }
+
+  /* Section labels — Swiss style */
+  .label-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: hsl(var(--ink-mute));
   }
+
+  .display {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    letter-spacing: -0.015em;
+  }
+
+  .hairline { border-color: hsl(var(--rule)); }
+}
+
+/* =========================================================
+   INVOICE SHEET — A4 @ 96dpi (794 x 1123)
+   Self-contained styles so the rendered PDF doesn't pick up
+   app chrome. All colors locked here, NOT the app theme.
+   ========================================================= */
+@layer components {
+  .a4-sheet {
+    width: 794px;
+    height: 1123px;
+    background: #ffffff;
+    color: #111317;
+    font-family: var(--font-sans);
+    font-feature-settings: "tnum";
+    position: relative;
+    box-shadow: 0 1px 0 rgba(17,19,23,0.04), 0 12px 40px -16px rgba(17,19,23,0.18);
+  }
+
+  .a4-sheet .hr-strong { background: #111317; height: 1px; width: 100%; }
+  .a4-sheet .hr-thin   { background: #d8d6d0; height: 1px; width: 100%; }
+}
+
+/* Print: keep the sheet exact, drop everything else */
+@media print {
+  body * { visibility: hidden; }
+  .a4-sheet, .a4-sheet * { visibility: visible; }
+  .a4-sheet { position: absolute; left: 0; top: 0; box-shadow: none; }
 }

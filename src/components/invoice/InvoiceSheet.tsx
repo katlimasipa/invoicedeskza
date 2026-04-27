@@ -339,7 +339,7 @@ function FooterLine({
   align = "left",
   mono = false,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   text: string;
   align?: "left" | "right";
   mono?: boolean;

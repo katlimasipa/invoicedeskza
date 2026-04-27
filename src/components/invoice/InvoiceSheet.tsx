@@ -209,7 +209,7 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
               }}
             >
               <div style={{ paddingRight: 12 }}>
-                <div style={{ fontWeight: 500 }}>{it.service || "—"}</div>
+                <div style={{ fontWeight: 500, letterSpacing: 0, wordSpacing: "normal" }}>{it.service || "—"}</div>
                 {it.note ? (
                   <div
                     style={{
@@ -217,7 +217,8 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
                       color: accentNote,
                       marginTop: 5,
                       fontStyle: "italic",
-                      letterSpacing: "0.01em",
+                      letterSpacing: 0,
+                      wordSpacing: "normal",
                       lineHeight: 1.5,
                     }}
                   >

@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { InvoiceSheet, InvoiceData, InvoiceItemData } from "@/components/invoice/InvoiceSheet";
 import { useSignedUrl } from "@/lib/useSignedUrl";
-import { formatZAR, calcGrandTotal, calcRowTotal } from "@/lib/format";
+import { formatZAR, calcGrandTotal, calcRowTotal, clientToFilenameToken } from "@/lib/format";
 import { exportSheetToPDF } from "@/lib/pdf";
 import { Plus, Trash2, Download, Save, BookmarkPlus } from "lucide-react";
 import { toast } from "sonner";
@@ -222,7 +222,8 @@ export default function InvoiceEditor() {
     try {
       // Wait one tick to ensure latest values are painted
       await new Promise((r) => requestAnimationFrame(r));
-      await exportSheetToPDF(sheetRef.current, `Invoice-${invoiceNumber || "draft"}.pdf`);
+      const token = clientToFilenameToken(clientName);
+      await exportSheetToPDF(sheetRef.current, `${token}ArchiteqInvoice.pdf`);
     } catch (e: any) {
       toast.error("PDF export failed");
       console.error(e);

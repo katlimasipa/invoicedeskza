@@ -338,12 +338,12 @@ export default function InvoiceEditor() {
                         <SmartNumberInput
                           value={it.unit_price}
                           onChange={(v) => setItem(i, { unit_price: v })}
-                          placeholder="Unit price"
+                          placeholder="Price"
                         />
                         <SmartNumberInput
                           value={it.original_unit_price ?? ""}
                           onChange={(v) => setItem(i, { original_unit_price: v === "" ? null : v })}
-                          placeholder="was (optional)"
+                          placeholder="Was"
                         />
                       </div>
                     </div>

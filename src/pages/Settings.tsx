@@ -122,7 +122,7 @@ export default function Settings() {
           <div className="grid sm:grid-cols-2 gap-6">
             <UploadCard
               label="Logo"
-              hint="Square works best · PNG/SVG · ≤ 2 MB"
+              hint="Any shape works · PNG/SVG · ≤ 2 MB"
               url={logoUrl}
               onPick={() => logoInput.current?.click()}
               onClear={() => setLogoPath(null)}

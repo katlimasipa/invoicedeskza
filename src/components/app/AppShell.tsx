@@ -26,6 +26,17 @@ export function AppShell({ children, title, eyebrow, action }: {
             <div className="flex items-center gap-2">{action}</div>
           </header>
           <main className="flex-1 px-4 sm:px-8 py-6 sm:py-10">{children}</main>
+          <footer className="border-t border-rule px-4 sm:px-8 py-4 text-[11px] text-ink-mute flex items-center justify-between gap-3">
+            <span className="label-eyebrow text-[9px] hidden sm:inline">invoice desk</span>
+            <a
+              href="https://architeq.co.za"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-ink transition-colors"
+            >
+              Built by <span className="font-medium text-ink-soft">Architeq Web Agency</span>
+            </a>
+          </footer>
         </div>
       </div>
     </SidebarProvider>

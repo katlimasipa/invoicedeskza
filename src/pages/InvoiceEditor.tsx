@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { InvoiceSheet, InvoiceData, InvoiceItemData } from "@/components/invoice/InvoiceSheet";
 import { useSignedUrl } from "@/lib/useSignedUrl";
-import { formatZAR, calcGrandTotal, calcRowTotal } from "@/lib/format";
+import { formatZAR, calcGrandTotal, calcRowTotal, clientToFilenameToken } from "@/lib/format";
 import { exportSheetToPDF } from "@/lib/pdf";
 import { Plus, Trash2, Download, Save, BookmarkPlus } from "lucide-react";
 import { toast } from "sonner";
@@ -222,7 +222,8 @@ export default function InvoiceEditor() {
     try {
       // Wait one tick to ensure latest values are painted
       await new Promise((r) => requestAnimationFrame(r));
-      await exportSheetToPDF(sheetRef.current, `Invoice-${invoiceNumber || "draft"}.pdf`);
+      const token = clientToFilenameToken(clientName);
+      await exportSheetToPDF(sheetRef.current, `${token}ArchiteqInvoice.pdf`);
     } catch (e: any) {
       toast.error("PDF export failed");
       console.error(e);
@@ -275,14 +276,14 @@ export default function InvoiceEditor() {
         </div>
       }
     >
-      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,420px)_1fr] gap-8 max-w-[1400px]">
+      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,420px)_1fr] gap-6 lg:gap-8 max-w-[1400px]">
         {/* ============= FORM ============= */}
         <div className="space-y-6">
           <section>
             <div className="label-eyebrow mb-3">Issued to</div>
             <div className="space-y-3">
               <Field label="Client name">
-                <Input value={clientName} onChange={(e) => setClientName(e.target.value)} placeholder="METSI’ 012" className="rounded-sm" />
+                <Input value={clientName} onChange={(e) => setClientName(e.target.value)} className="rounded-sm" />
               </Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Invoice date">
@@ -292,6 +293,9 @@ export default function InvoiceEditor() {
                   <Input value={invoiceNumber} disabled className="rounded-sm font-mono text-[12px]" />
                 </Field>
               </div>
+              <p className="text-[11px] text-ink-mute leading-snug">
+                Invoice numbers are assigned automatically when you save — they can't be edited.
+              </p>
             </div>
           </section>
 
@@ -311,31 +315,30 @@ export default function InvoiceEditor() {
                       <Input
                         value={it.service}
                         onChange={(e) => setItem(i, { service: e.target.value })}
-                        placeholder="Custom Website Package"
-                        className="rounded-sm h-8 text-[13px]"
+                        placeholder="Service description"
+                        className="rounded-sm h-9 text-[13px]"
                       />
                       <Input
                         value={it.note ?? ""}
                         onChange={(e) => setItem(i, { note: e.target.value })}
-                        placeholder="Optional small note (italic on invoice)"
-                        className="rounded-sm h-7 text-[11px] text-ink-soft italic"
+                        placeholder="Optional note (italic on invoice)"
+                        className="rounded-sm h-8 text-[11px] text-ink-soft italic"
                       />
                       <div className="grid grid-cols-3 gap-2">
-                        <Input
-                          type="number" min={0} step="0.01"
-                          value={it.qty} onChange={(e) => setItem(i, { qty: e.target.value })}
-                          placeholder="Qty" className="rounded-sm h-8 font-mono text-[12px]"
+                        <SmartNumberInput
+                          value={it.qty}
+                          onChange={(v) => setItem(i, { qty: v })}
+                          placeholder="Qty"
                         />
-                        <Input
-                          type="number" min={0} step="0.01"
-                          value={it.unit_price} onChange={(e) => setItem(i, { unit_price: e.target.value })}
-                          placeholder="Unit price" className="rounded-sm h-8 font-mono text-[12px]"
+                        <SmartNumberInput
+                          value={it.unit_price}
+                          onChange={(v) => setItem(i, { unit_price: v })}
+                          placeholder="Unit price"
                         />
-                        <Input
-                          type="number" min={0} step="0.01"
+                        <SmartNumberInput
                           value={it.original_unit_price ?? ""}
-                          onChange={(e) => setItem(i, { original_unit_price: e.target.value || null })}
-                          placeholder="was (optional)" className="rounded-sm h-8 font-mono text-[12px]"
+                          onChange={(v) => setItem(i, { original_unit_price: v === "" ? null : v })}
+                          placeholder="was (optional)"
                         />
                       </div>
                     </div>
@@ -358,19 +361,22 @@ export default function InvoiceEditor() {
 
           <section className="text-[11px] text-ink-mute leading-relaxed border-t border-rule pt-4">
             Company info, logo, bank details and signature come from{" "}
-            <a href="/settings" className="underline underline-offset-2 hover:text-ink">Settings</a>. Saved invoices keep their snapshot, so editing settings later won’t alter past invoices.
+            <a href="/settings" className="underline underline-offset-2 hover:text-ink">Settings</a>. Saved invoices keep their snapshot, so editing settings later won't alter past invoices.
           </section>
         </div>
 
         {/* ============= LIVE PREVIEW ============= */}
-        <div className="space-y-3">
+        <div className="space-y-3 min-w-0">
           <div className="flex items-center justify-between">
             <div className="label-eyebrow">A4 · live preview</div>
-            <div className="font-mono text-[10px] text-ink-mute">794 × 1123 px</div>
+            <div className="font-mono text-[10px] text-ink-mute hidden sm:block">794 × 1123 px</div>
           </div>
-          <div className="overflow-auto border border-rule bg-surface-sunk p-4 sm:p-6 rounded-sm" style={{ maxHeight: "calc(100vh - 200px)" }}>
-            <div className="mx-auto" style={{ width: 794 }}>
-              <InvoiceSheet ref={sheetRef} data={previewData} />
+          <div className="overflow-auto border border-rule bg-surface-sunk p-3 sm:p-6 rounded-sm" style={{ maxHeight: "calc(100vh - 200px)" }}>
+            {/* Scale-down on smaller widths so the A4 sheet remains readable on mobile */}
+            <div className="mx-auto origin-top-left lg:origin-top" style={{ width: 794 }}>
+              <div className="scale-[0.42] sm:scale-[0.6] md:scale-[0.78] lg:scale-100 origin-top-left" style={{ transformOrigin: "top left" }}>
+                <InvoiceSheet ref={sheetRef} data={previewData} />
+              </div>
             </div>
           </div>
         </div>
@@ -385,5 +391,45 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       <Label className="label-eyebrow">{label}</Label>
       <div className="mt-1.5">{children}</div>
     </div>
+  );
+}
+
+/**
+ * Number input that:
+ * - Shows placeholder when value is "" or 0 (so the placeholder is readable)
+ * - Auto-clears the leading "0" the moment the user types a real digit
+ * - Uses inputMode="decimal" for a numeric keypad on mobile
+ */
+function SmartNumberInput({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: number | string | null | undefined;
+  onChange: (v: string) => void;
+  placeholder?: string;
+}) {
+  // Display as empty string when value is 0 or nullish so the placeholder shows.
+  const display =
+    value === null || value === undefined || value === "" || value === 0 || value === "0"
+      ? ""
+      : String(value);
+
+  return (
+    <Input
+      type="text"
+      inputMode="decimal"
+      value={display}
+      onChange={(e) => {
+        const raw = e.target.value.replace(/[^\d.]/g, "");
+        onChange(raw);
+      }}
+      onFocus={(e) => {
+        // If the displayed value is "0", clear it on focus
+        if (e.target.value === "0") onChange("");
+      }}
+      placeholder={placeholder}
+      className="rounded-sm h-9 font-mono text-[12px]"
+    />
   );
 }

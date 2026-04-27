@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { format } from "date-fns";
 import { formatZAR, calcRowTotal, calcGrandTotal, formatPhone } from "@/lib/format";
 
@@ -209,7 +209,7 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
               }}
             >
               <div style={{ paddingRight: 12 }}>
-                <div style={{ fontWeight: 500 }}>{it.service || "—"}</div>
+                <div style={{ fontWeight: 500, letterSpacing: 0, wordSpacing: "normal" }}>{it.service || "—"}</div>
                 {it.note ? (
                   <div
                     style={{
@@ -217,7 +217,8 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
                       color: accentNote,
                       marginTop: 5,
                       fontStyle: "italic",
-                      letterSpacing: "0.01em",
+                      letterSpacing: 0,
+                      wordSpacing: "normal",
                       lineHeight: 1.5,
                     }}
                   >
@@ -313,34 +314,61 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
       </div>
 
       {/* ============== FOOTER ============== */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "center", gap: 16, fontFamily: "Inter Tight, sans-serif", fontSize: 11.5, color: ink, lineHeight: 1.7 }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          {data.phone ? (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-              <PhoneGlyph />
-              <span style={{ fontVariantNumeric: "tabular-nums" }}>{formatPhone(data.phone)}</span>
-            </span>
-          ) : null}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "start", gap: 16, fontFamily: "Inter Tight, sans-serif", fontSize: 11.5, color: ink, lineHeight: 1.7 }}>
+        <div>
+          {data.phone ? <FooterLine icon={<PhoneGlyph />} text={formatPhone(data.phone)} mono /> : null}
         </div>
-        <div style={{ textAlign: "right", display: "flex", flexDirection: "column", gap: 4 }}>
-          {data.email ? (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 8, justifyContent: "flex-end" }}>
-              <MailGlyph />
-              <span>{data.email}</span>
-            </span>
-          ) : null}
-          {data.website ? (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 8, justifyContent: "flex-end" }}>
-              <GlobeGlyph />
-              <span>{data.website}</span>
-            </span>
-          ) : null}
+        <div style={{ textAlign: "right" }}>
+          {data.email ? <FooterLine icon={<MailGlyph />} text={data.email} align="right" /> : null}
+          {data.website ? <FooterLine icon={<GlobeGlyph />} text={data.website} align="right" /> : null}
         </div>
       </div>
     </div>
   );
 });
 InvoiceSheet.displayName = "InvoiceSheet";
+
+/* ============================================================
+   Footer line — uses table layout so html2canvas always renders
+   the icon and the text on the same baseline with a real gap
+   (inline-flex gap collapses in some snapshot conditions).
+   ============================================================ */
+function FooterLine({
+  icon,
+  text,
+  align = "left",
+  mono = false,
+}: {
+  icon: ReactNode;
+  text: string;
+  align?: "left" | "right";
+  mono?: boolean;
+}) {
+  const cells = [
+    <td key="i" style={{ width: 18, verticalAlign: "middle", padding: 0 }}>{icon}</td>,
+    <td
+      key="t"
+      style={{
+        verticalAlign: "middle",
+        padding: 0,
+        paddingLeft: 8,
+        whiteSpace: "nowrap",
+        fontVariantNumeric: mono ? "tabular-nums" : undefined,
+        letterSpacing: 0,
+        wordSpacing: "normal",
+      }}
+    >
+      {text}
+    </td>,
+  ];
+  return (
+    <table style={{ borderCollapse: "collapse", marginLeft: align === "right" ? "auto" : 0, marginRight: 0 }}>
+      <tbody>
+        <tr>{align === "right" ? [cells[1], cells[0]].map((c, i) => i === 0 ? <td key="t" style={{ verticalAlign: "middle", padding: 0, paddingRight: 8, whiteSpace: "nowrap", fontVariantNumeric: mono ? "tabular-nums" : undefined, letterSpacing: 0, wordSpacing: "normal" }}>{text}</td> : <td key="i" style={{ width: 18, verticalAlign: "middle", padding: 0 }}>{icon}</td>) : cells}</tr>
+      </tbody>
+    </table>
+  );
+}
 
 /* ============================================================
    Inline SVG glyphs — sized for footer line height (~13px).

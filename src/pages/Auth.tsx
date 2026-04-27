@@ -80,7 +80,17 @@ export default function Auth() {
           </div>
         </div>
 
-        <div className="label-eyebrow text-[10px]">Built in Cape Town · Designed for the rand</div>
+        <div className="space-y-2">
+          <div className="label-eyebrow text-[10px]">Built in Cape Town · Designed for the rand</div>
+          <a
+            href="https://architeq.co.za"
+            target="_blank"
+            rel="noreferrer"
+            className="text-[11px] text-ink-mute hover:text-ink transition-colors"
+          >
+            Built by <span className="text-ink-soft font-medium">Architeq Web Agency</span> →
+          </a>
+        </div>
       </div>
 
       {/* Form side */}
@@ -135,6 +145,17 @@ export default function Auth() {
           >
             {mode === "signup" ? "Already have an account? Sign in →" : "New here? Create an account →"}
           </button>
+
+          <div className="mt-10 lg:hidden text-center">
+            <a
+              href="https://architeq.co.za"
+              target="_blank"
+              rel="noreferrer"
+              className="text-[11px] text-ink-mute hover:text-ink transition-colors"
+            >
+              Built by <span className="text-ink-soft font-medium">Architeq Web Agency</span> →
+            </a>
+          </div>
         </div>
       </div>
     </div>

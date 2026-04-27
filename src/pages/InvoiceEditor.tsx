@@ -434,7 +434,7 @@ function SmartNumberInput({
         if (e.target.value === "0") onChange("");
       }}
       placeholder={placeholder}
-      className="rounded-sm h-9 font-mono text-[12px]"
+      className="rounded-sm h-9 font-mono text-[12px] px-2"
     />
   );
 }

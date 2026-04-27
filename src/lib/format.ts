@@ -26,3 +26,55 @@ export function calcRowTotal(qty: number | string, unit: number | string): numbe
 export function calcGrandTotal(items: { qty: number | string; unit_price: number | string }[]): number {
   return items.reduce((s, i) => s + calcRowTotal(i.qty, i.unit_price), 0);
 }
+
+/**
+ * Format a phone number into "+27 123 456 7890" style.
+ * Accepts strings with any spacing/formatting; falls back to the raw string
+ * when it can't confidently regroup it.
+ */
+export function formatPhone(raw: string | null | undefined): string {
+  if (!raw) return "";
+  const trimmed = String(raw).trim();
+  if (!trimmed) return "";
+  // strip everything except digits and a leading +
+  const hasPlus = trimmed.startsWith("+");
+  const digits = trimmed.replace(/[^\d]/g, "");
+  if (!digits) return trimmed;
+
+  // Normalise SA local "0xx..." → "+27 xx..."
+  let cc = "";
+  let rest = digits;
+  if (hasPlus) {
+    // assume first 1-3 digits are country code; default SA = 27
+    if (digits.startsWith("27")) { cc = "27"; rest = digits.slice(2); }
+    else { cc = digits.slice(0, 2); rest = digits.slice(2); }
+  } else if (digits.startsWith("27") && digits.length >= 11) {
+    cc = "27"; rest = digits.slice(2);
+  } else if (digits.startsWith("0")) {
+    cc = "27"; rest = digits.slice(1);
+  } else {
+    return trimmed;
+  }
+
+  // Group rest as 3 3 4
+  if (rest.length < 9) return `+${cc} ${rest}`;
+  const a = rest.slice(0, 3);
+  const b = rest.slice(3, 6);
+  const c = rest.slice(6);
+  return `+${cc} ${a} ${b} ${c}`;
+}
+
+/** Sanitise a client name into a filename-safe PascalCase token. */
+export function clientToFilenameToken(name: string | null | undefined): string {
+  if (!name) return "Client";
+  const cleaned = String(name)
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^A-Za-z0-9\s]/g, " ")
+    .trim();
+  if (!cleaned) return "Client";
+  return cleaned
+    .split(/\s+/)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join("");
+}

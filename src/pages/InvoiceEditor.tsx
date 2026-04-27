@@ -290,11 +290,16 @@ export default function InvoiceEditor() {
                   <Input type="date" value={invoiceDate} onChange={(e) => setInvoiceDate(e.target.value)} className="rounded-sm" />
                 </Field>
                 <Field label="Invoice №">
-                  <Input value={invoiceNumber} disabled className="rounded-sm font-mono text-[12px]" />
+                  <Input
+                    value={invoiceNumber}
+                    onChange={(e) => setInvoiceNumber(e.target.value)}
+                    placeholder="Auto on save"
+                    className="rounded-sm font-mono text-[12px]"
+                  />
                 </Field>
               </div>
               <p className="text-[11px] text-ink-mute leading-snug">
-                Invoice numbers are assigned automatically when you save — they can't be edited.
+                Leave blank to auto-assign the next sequential number on save.
               </p>
             </div>
           </section>

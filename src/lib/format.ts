@@ -56,12 +56,8 @@ export function formatPhone(raw: string | null | undefined): string {
     return trimmed;
   }
 
-  // Group rest as 2 3 4 → "+27 12 345 6789"
-  if (rest.length < 9) return `+${cc} ${rest}`;
-  const a = rest.slice(0, 2);
-  const b = rest.slice(2, 5);
-  const c = rest.slice(5);
-  return `+${cc} ${a} ${b} ${c}`;
+  // No spaces within the number → "+27123456789"
+  return `+${cc}${rest}`;
 }
 
 /** Sanitise a client name into a filename-safe PascalCase token. */

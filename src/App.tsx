@@ -12,6 +12,7 @@ import InvoiceEditor from "./pages/InvoiceEditor.tsx";
 import Templates from "./pages/Templates.tsx";
 import Settings from "./pages/Settings.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import PreviewSheet from "./pages/PreviewSheet.tsx";
 
 const queryClient = new QueryClient();
 

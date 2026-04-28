@@ -16,7 +16,7 @@ export type InvoiceData = {
   client_name: string;
 
   company_name?: string | null;
-  logo_url?: string | null;        // resolved signed/data url
+  logo_url?: string | null;
   signature_url?: string | null;
 
   phone?: string | null;
@@ -30,18 +30,7 @@ export type InvoiceData = {
   items: InvoiceItemData[];
 };
 
-/**
- * A4 invoice sheet — pixel-matched to the supplied reference.
- * Self-contained styles (inline + .a4-sheet class) so html2canvas
- * captures it cleanly and the PDF doesn't inherit app chrome.
- *
- * Sheet: 794 × 1123 px (A4 @ 96 dpi)
- *
- * Single-page strategy: items render in a flex column; if more than
- * ITEMS_BEFORE_SHRINK rows are present, font sizes & padding step down
- * gracefully so the sheet always fits one page.
- */
-const ITEMS_BEFORE_SHRINK = 9;
+const ITEMS_BEFORE_SHRINK = 10;
 
 export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({ data }, ref) => {
   const dateText =
@@ -53,22 +42,20 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
   const grand = calcGrandTotal(items);
   const dense = items.length > ITEMS_BEFORE_SHRINK;
 
-  // ----- typography tokens (locked to the sheet, not the app theme) -----
-  const ink = "#111317";
-  const inkSoft = "#3a3d44";
-  const inkMute = "#7a7d85";
-  const ruleColor = "#d8d6d0";
-  const accentNote = "#5b4b6f"; // muted plum-grey for the small note line, like the reference
+  const ink = "hsl(220 18% 11%)";
+  const soft = "hsl(220 10% 32%)";
+  const mute = "hsl(220 8% 52%)";
+  const faint = "hsl(220 12% 86%)";
+  const paper = "hsl(0 0% 100%)";
+  const quiet = "hsl(42 18% 97%)";
 
-  // Spacing scales — slightly more generous than v1
-  const rowVPad = dense ? 11 : 16;            // vertical padding per item row
-  const bodyFs = dense ? 12.5 : 13.5;          // body row font size
-  const noteFs = dense ? 10 : 11;
-  const sectionGap = dense ? 18 : 26;          // gap between major blocks
-  const headerMb = dense ? 18 : 24;
+  const bodyFs = dense ? 12 : 13;
+  const noteFs = dense ? 10 : 10.5;
+  const rowPad = dense ? "8px 0" : "11px 0";
+  const sectionGap = dense ? 18 : 26;
+  const font = "Inter Tight, Arial, sans-serif";
+  const mono = "JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, monospace";
 
-  // Determine whether to render the company-name word-mark.
-  // If a logo is present, the user told us the wordmark is redundant.
   const showWordmark = !data.logo_url && !!(data.company_name && data.company_name.trim());
 
   return (
@@ -77,325 +64,284 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
       className="a4-sheet"
       style={{
         boxSizing: "border-box",
-        padding: "56px 56px 44px 56px",
+        padding: "52px 56px 42px 56px",
         display: "flex",
         flexDirection: "column",
-        lineHeight: 1.55,
+        overflow: "hidden",
+        lineHeight: 1.45,
+        background: paper,
+        color: ink,
+        fontFamily: font,
       }}
     >
-      {/* ============== HEADER ============== */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: headerMb, gap: 24 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16, minWidth: 0, flex: 1 }}>
-          <div
-            style={{
-              // logo container — wider so non-square logos breathe
-              maxWidth: 220,
-              maxHeight: 96,
-              minHeight: data.logo_url ? 0 : 64,
-              minWidth: data.logo_url ? 0 : 96,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              flexShrink: 0,
-              border: data.logo_url ? "none" : `1px dashed ${ruleColor}`,
-              background: data.logo_url ? "transparent" : "#faf9f6",
-              padding: data.logo_url ? 0 : "12px 18px",
-            }}
-          >
-            {data.logo_url ? (
-              <img
-                src={data.logo_url}
-                alt=""
-                crossOrigin="anonymous"
-                style={{ maxWidth: 220, maxHeight: 96, objectFit: "contain", display: "block" }}
-              />
-            ) : (
-              <span style={{ fontSize: 9, color: inkMute, fontFamily: "JetBrains Mono, monospace", letterSpacing: "0.08em" }}>LOGO</span>
-            )}
-          </div>
-          {showWordmark && (
-            <div
-              style={{
-                fontFamily: "Inter Tight, sans-serif",
-                fontWeight: 600,
-                fontSize: 22,
-                letterSpacing: "-0.01em",
-                color: ink,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {data.company_name}
-            </div>
-          )}
-        </div>
-        <div
-          style={{
-            fontFamily: "Inter Tight, sans-serif",
-            fontWeight: 700,
-            fontSize: 24,
-            letterSpacing: "0.2em",
-            color: ink,
-            flexShrink: 0,
-          }}
-        >
-          INVOICE
-        </div>
-      </div>
+      <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: 22 }}>
+        <tbody>
+          <tr>
+            <td style={{ width: "62%", verticalAlign: "middle", padding: 0 }}>
+              <table style={{ borderCollapse: "collapse", tableLayout: "fixed" }}>
+                <tbody>
+                  <tr>
+                    <td style={{ width: data.logo_url ? 240 : 116, verticalAlign: "middle", padding: 0 }}>
+                      {data.logo_url ? (
+                        <img
+                          src={data.logo_url}
+                          alt=""
+                          crossOrigin="anonymous"
+                          style={{ maxWidth: 236, maxHeight: 96, objectFit: "contain", display: "block" }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: 96,
+                            height: 58,
+                            border: `1px solid ${faint}`,
+                            background: quiet,
+                            display: "table-cell",
+                            verticalAlign: "middle",
+                            textAlign: "center",
+                            fontFamily: mono,
+                            fontSize: 9,
+                            color: mute,
+                          }}
+                        >
+                          LOGO
+                        </div>
+                      )}
+                    </td>
+                    {showWordmark ? (
+                      <td style={{ verticalAlign: "middle", paddingLeft: 16 }}>
+                        <div style={{ fontWeight: 700, fontSize: 22, color: ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {data.company_name}
+                        </div>
+                      </td>
+                    ) : null}
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td style={{ width: "38%", verticalAlign: "middle", textAlign: "right", padding: 0 }}>
+              <div style={{ fontWeight: 800, fontSize: 27, color: ink, lineHeight: 1 }}>INVOICE</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-      <div style={{ height: 1, background: ink, width: "100%", marginBottom: sectionGap }} />
+      <div style={{ height: 2, background: ink, width: "100%", marginBottom: sectionGap }} />
 
-      {/* ============== META BLOCK ============== */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: sectionGap + 4 }}>
-        <div>
-          <div style={{ fontFamily: "Inter Tight, sans-serif", fontWeight: 600, fontSize: 11, letterSpacing: "0.14em", color: ink, marginBottom: 14 }}>
-            INVOICE TO :
-          </div>
-          <div style={{ fontFamily: "Inter Tight, sans-serif", fontWeight: 700, fontSize: 14, color: ink, letterSpacing: "0.04em" }}>
-            {data.client_name || "—"}
-          </div>
-        </div>
-        <div style={{ textAlign: "right", display: "flex", flexDirection: "column", gap: 10 }}>
-          <div style={{ fontFamily: "Inter Tight, sans-serif", fontSize: 12.5, color: ink, letterSpacing: "0.01em" }}>
-            <span>Invoice No&nbsp;:&nbsp;</span>
-            <span style={{ fontVariantNumeric: "tabular-nums", fontWeight: 600 }}>{data.invoice_number}</span>
-          </div>
-          <div style={{ fontFamily: "Inter Tight, sans-serif", fontSize: 12.5, color: ink, letterSpacing: "0.01em" }}>
-            <span>Invoice Date&nbsp;:&nbsp;</span>
-            <span style={{ fontVariantNumeric: "tabular-nums", fontWeight: 600 }}>{dateText}</span>
-          </div>
-        </div>
-      </div>
+      <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: sectionGap }}>
+        <tbody>
+          <tr>
+            <td style={{ width: "56%", padding: 0, verticalAlign: "top" }}>
+              <div style={{ fontFamily: mono, fontSize: 10.5, fontWeight: 700, color: mute, marginBottom: 8 }}>INVOICE TO</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: ink, overflowWrap: "break-word" }}>{data.client_name || "—"}</div>
+            </td>
+            <td style={{ width: "44%", padding: 0, verticalAlign: "top" }}>
+              <MetaRow label="Invoice No" value={data.invoice_number || "—"} />
+              <MetaRow label="Invoice Date" value={dateText} />
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-      {/* ============== ITEMS TABLE ============== */}
-      <div style={{ height: 1, background: ruleColor, width: "100%" }} />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 70px 130px 110px",
-          padding: "14px 0 12px",
-          fontFamily: "Inter Tight, sans-serif",
-          fontWeight: 700,
-          fontSize: 11,
-          letterSpacing: "0.14em",
-          color: ink,
-        }}
-      >
-        <div>SERVICE</div>
-        <div style={{ textAlign: "center" }}>QTY</div>
-        <div style={{ textAlign: "right" }}>UNIT PRICE</div>
-        <div style={{ textAlign: "right" }}>TOTAL</div>
-      </div>
-      <div style={{ height: 1, background: ruleColor, width: "100%" }} />
+      <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: sectionGap }}>
+        <colgroup>
+          <col style={{ width: "49%" }} />
+          <col style={{ width: "11%" }} />
+          <col style={{ width: "22%" }} />
+          <col style={{ width: "18%" }} />
+        </colgroup>
+        <thead>
+          <tr>
+            <th style={headCell}>SERVICE</th>
+            <th style={{ ...headCell, textAlign: "center" }}>QTY</th>
+            <th style={{ ...headCell, textAlign: "right" }}>UNIT PRICE</th>
+            <th style={{ ...headCell, textAlign: "right" }}>TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((it, i) => {
+            const rowTotal = calcRowTotal(it.qty, it.unit_price);
+            const orig = it.original_unit_price != null && Number(it.original_unit_price) > 0 ? Number(it.original_unit_price) : null;
 
-      {items.map((it, i) => {
-        const rowTotal = calcRowTotal(it.qty, it.unit_price);
-        const orig = it.original_unit_price != null && Number(it.original_unit_price) > 0
-          ? Number(it.original_unit_price)
-          : null;
-        return (
-          <div key={i}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 70px 130px 110px",
-                padding: `${rowVPad}px 0 ${Math.max(8, rowVPad - 6)}px`,
-                alignItems: "start",
-                fontFamily: "Inter Tight, sans-serif",
-                fontSize: bodyFs,
-                color: ink,
-                lineHeight: 1.5,
-              }}
-            >
-              <div style={{ paddingRight: 12 }}>
-                <div style={{ fontWeight: 500, letterSpacing: 0, wordSpacing: "normal" }}>{it.service || "—"}</div>
-                {it.note ? (
-                  <div
-                    style={{
-                      fontSize: noteFs,
-                      color: accentNote,
-                      marginTop: 5,
-                      fontStyle: "italic",
-                      letterSpacing: 0,
-                      wordSpacing: "normal",
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    * {it.note}
+            return (
+              <tr key={i}>
+                <td style={{ ...bodyCell, padding: rowPad, paddingRight: 16, verticalAlign: "top" }}>
+                  <div style={{ fontSize: bodyFs, fontWeight: 600, color: ink, overflowWrap: "break-word", wordBreak: "normal", lineHeight: 1.42 }}>
+                    {it.service || "—"}
                   </div>
+                  {it.note ? (
+                    <div style={{ fontSize: noteFs, color: soft, marginTop: 4, lineHeight: 1.42, overflowWrap: "break-word" }}>
+                      * {it.note}
+                    </div>
+                  ) : null}
+                </td>
+                <td style={{ ...bodyCell, padding: rowPad, textAlign: "center", fontSize: bodyFs, fontVariantNumeric: "tabular-nums", verticalAlign: "top" }}>{it.qty || 0}</td>
+                <td style={{ ...bodyCell, padding: rowPad, textAlign: "right", fontSize: bodyFs, fontVariantNumeric: "tabular-nums", verticalAlign: "top", whiteSpace: "nowrap" }}>
+                  {orig ? (
+                    <>
+                      <div style={{ color: mute, fontSize: bodyFs - 1, textDecoration: "line-through", lineHeight: 1.2 }}>{formatZAR(orig)}</div>
+                      <div>{formatZAR(it.unit_price)}</div>
+                    </>
+                  ) : (
+                    formatZAR(it.unit_price)
+                  )}
+                </td>
+                <td style={{ ...bodyCell, padding: rowPad, textAlign: "right", fontSize: bodyFs, fontWeight: 700, fontVariantNumeric: "tabular-nums", verticalAlign: "top", whiteSpace: "nowrap" }}>
+                  {formatZAR(rowTotal)}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+
+      <div style={{ flex: 1, minHeight: dense ? 12 : 28 }} />
+
+      <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: dense ? 20 : 30 }}>
+        <tbody>
+          <tr>
+            <td style={{ width: "52%", padding: "0 26px 0 0", verticalAlign: "top" }}>
+              <div style={{ borderTop: `1px solid ${ink}`, paddingTop: 12 }}>
+                <div style={{ fontFamily: mono, fontSize: 10.5, fontWeight: 700, color: mute, marginBottom: 8 }}>BANK ACCOUNT DETAILS</div>
+                <DetailLine label="Name" value={data.bank_account_name || "—"} />
+                <DetailLine label="Bank" value={data.bank_name || "—"} />
+                <DetailLine label="Acc no" value={data.bank_account_number || "—"} mono />
+              </div>
+            </td>
+            <td style={{ width: "48%", padding: 0, verticalAlign: "top" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", borderTop: `2px solid ${ink}`, borderBottom: `2px solid ${ink}` }}>
+                <tbody>
+                  <tr>
+                    <td style={{ padding: "15px 0", fontSize: 15, fontWeight: 800, color: ink }}>Total Due</td>
+                    <td style={{ padding: "15px 0", fontSize: 15, fontWeight: 800, color: ink, textAlign: "right", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+                      {formatZAR(grand)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: dense ? 18 : 28 }}>
+        <tbody>
+          <tr>
+            <td style={{ width: "50%", padding: 0, verticalAlign: "bottom" }}>
+              <div style={{ height: 58 }}>
+                {data.signature_url ? (
+                  <img src={data.signature_url} alt="" crossOrigin="anonymous" style={{ maxHeight: 54, maxWidth: 210, objectFit: "contain", display: "block" }} />
                 ) : null}
               </div>
-              <div style={{ textAlign: "center", fontVariantNumeric: "tabular-nums" }}>{it.qty || 0}</div>
-              <div style={{ textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
-                {orig ? (
-                  <>
-                    <span style={{ textDecoration: "line-through", color: inkMute, marginRight: 6 }}>
-                      {formatZAR(orig)}
-                    </span>
-                    <span>{formatZAR(it.unit_price)}</span>
-                  </>
-                ) : (
-                  formatZAR(it.unit_price)
-                )}
-              </div>
-              <div style={{ textAlign: "right", fontVariantNumeric: "tabular-nums", fontWeight: 500 }}>{formatZAR(rowTotal)}</div>
-            </div>
-            <div style={{ height: 1, background: ruleColor, width: "100%" }} />
-          </div>
-        );
-      })}
+              <div style={{ height: 1, background: ink, width: 210 }} />
+              <div style={{ fontSize: 11, color: soft, marginTop: 7, marginLeft: 78 }}>Signed</div>
+            </td>
+            <td style={{ width: "50%", padding: 0, verticalAlign: "bottom", textAlign: "right" }}>
+              <div style={{ fontSize: 21, fontWeight: 800, color: ink }}>THANK YOU!</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-      {/* spacer pushes footer block down */}
-      <div style={{ flex: 1, minHeight: dense ? 24 : 40 }} />
-
-      {/* ============== BANK + TOTAL ============== */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, alignItems: "start", marginBottom: dense ? 24 : 36 }}>
-        <div
-          style={{
-            border: `1px solid ${accentNote}`,
-            padding: "16px 20px",
-            fontFamily: "Inter Tight, sans-serif",
-            fontSize: 12,
-            color: ink,
-            lineHeight: 1.85,
-            maxWidth: 320,
-          }}
-        >
-          <div style={{ fontWeight: 700, letterSpacing: "0.08em", marginBottom: 8 }}>BANK ACCOUNT DETAILS:</div>
-          <div><span style={{ fontWeight: 700 }}>NAME:</span> {data.bank_account_name || "—"}</div>
-          <div><span style={{ fontWeight: 700 }}>BANK:</span> {data.bank_name || "—"}</div>
-          <div><span style={{ fontWeight: 700 }}>ACC NO:</span> <span style={{ fontVariantNumeric: "tabular-nums" }}>{data.bank_account_number || "—"}</span></div>
-        </div>
-        <div style={{ alignSelf: "end" }}>
-          <div style={{ height: 1, background: ink }} />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              padding: "14px 4px 14px 12px",
-              fontFamily: "Inter Tight, sans-serif",
-              fontSize: 15,
-              fontWeight: 700,
-              color: ink,
-              letterSpacing: "0.02em",
-            }}
-          >
-            <span>Total Due&nbsp;:</span>
-            <span style={{ fontVariantNumeric: "tabular-nums" }}>{formatZAR(grand)}</span>
-          </div>
-          <div style={{ height: 1, background: ink }} />
-        </div>
-      </div>
-
-      {/* ============== SIGNATURE + THANK YOU ============== */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "end", marginBottom: dense ? 20 : 32 }}>
-        <div>
-          <div style={{ height: 56, display: "flex", alignItems: "flex-end" }}>
-            {data.signature_url ? (
-              <img
-                src={data.signature_url}
-                alt=""
-                crossOrigin="anonymous"
-                style={{ maxHeight: 56, maxWidth: 200, objectFit: "contain" }}
-              />
-            ) : (
-              <span style={{ fontFamily: "Caveat, cursive", fontSize: 28, color: ink }}>&nbsp;</span>
-            )}
-          </div>
-          <div style={{ height: 1, background: ink, width: 200, marginTop: 4 }} />
-          <div style={{ fontFamily: "Inter Tight, sans-serif", fontSize: 11, color: inkSoft, marginTop: 6, marginLeft: 70, letterSpacing: "0.08em" }}>
-            Signed
-          </div>
-        </div>
-        <div style={{ textAlign: "right", fontFamily: "Inter Tight, sans-serif", fontWeight: 700, fontSize: 18, letterSpacing: "0.2em", color: ink }}>
-          THANK YOU!
-        </div>
-      </div>
-
-      {/* ============== FOOTER ============== */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "start", gap: 16, fontFamily: "Inter Tight, sans-serif", fontSize: 11.5, color: ink, lineHeight: 1.7 }}>
-        <div>
-          {data.phone ? <FooterLine icon={<PhoneGlyph />} text={formatPhone(data.phone)} mono /> : null}
-        </div>
-        <div style={{ textAlign: "right" }}>
-          {data.email ? <FooterLine icon={<MailGlyph />} text={data.email} align="right" /> : null}
-          {data.website ? <FooterLine icon={<GlobeGlyph />} text={data.website} align="right" /> : null}
-        </div>
-      </div>
+      <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", borderTop: `1px solid ${faint}`, paddingTop: 10 }}>
+        <tbody>
+          <tr>
+            <td style={{ width: "34%", padding: "11px 8px 0 0", verticalAlign: "top" }}>
+              {data.phone ? <FooterLine icon={<PhoneGlyph />} text={formatPhone(data.phone)} mono /> : null}
+            </td>
+            <td style={{ width: "33%", padding: "11px 8px 0 8px", verticalAlign: "top" }}>
+              {data.email ? <FooterLine icon={<MailGlyph />} text={data.email} /> : null}
+            </td>
+            <td style={{ width: "33%", padding: "11px 0 0 8px", verticalAlign: "top" }}>
+              {data.website ? <FooterLine icon={<GlobeGlyph />} text={data.website} /> : null}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 });
 InvoiceSheet.displayName = "InvoiceSheet";
 
-/* ============================================================
-   Footer line — uses table layout so html2canvas always renders
-   the icon and the text on the same baseline with a real gap
-   (inline-flex gap collapses in some snapshot conditions).
-   ============================================================ */
-function FooterLine({
-  icon,
-  text,
-  align = "left",
-  mono = false,
-}: {
-  icon: ReactNode;
-  text: string;
-  align?: "left" | "right";
-  mono?: boolean;
-}) {
-  const cells = [
-    <td key="i" style={{ width: 18, verticalAlign: "middle", padding: 0 }}>{icon}</td>,
-    <td
-      key="t"
-      style={{
-        verticalAlign: "middle",
-        padding: 0,
-        paddingLeft: 8,
-        whiteSpace: "nowrap",
-        fontVariantNumeric: mono ? "tabular-nums" : undefined,
-        letterSpacing: 0,
-        wordSpacing: "normal",
-      }}
-    >
-      {text}
-    </td>,
-  ];
+const headCell = {
+  borderTop: "1px solid hsl(220 18% 11%)",
+  borderBottom: "1px solid hsl(220 12% 86%)",
+  padding: "12px 0 10px",
+  textAlign: "left" as const,
+  fontFamily: "JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, monospace",
+  fontSize: 10,
+  fontWeight: 700,
+  color: "hsl(220 8% 52%)",
+};
+
+const bodyCell = {
+  borderBottom: "1px solid hsl(220 12% 86%)",
+  color: "hsl(220 18% 11%)",
+};
+
+function MetaRow({ label, value }: { label: string; value: string }) {
   return (
-    <table style={{ borderCollapse: "collapse", marginLeft: align === "right" ? "auto" : 0, marginRight: 0 }}>
+    <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: 7 }}>
       <tbody>
-        <tr>{align === "right" ? [cells[1], cells[0]].map((c, i) => i === 0 ? <td key="t" style={{ verticalAlign: "middle", padding: 0, paddingRight: 8, whiteSpace: "nowrap", fontVariantNumeric: mono ? "tabular-nums" : undefined, letterSpacing: 0, wordSpacing: "normal" }}>{text}</td> : <td key="i" style={{ width: 18, verticalAlign: "middle", padding: 0 }}>{icon}</td>) : cells}</tr>
+        <tr>
+          <td style={{ width: "46%", padding: 0, textAlign: "right", fontSize: 12, color: "hsl(220 10% 32%)" }}>{label}</td>
+          <td style={{ width: "54%", padding: 0, textAlign: "right", fontSize: 12.5, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: "hsl(220 18% 11%)", whiteSpace: "nowrap" }}>{value}</td>
+        </tr>
       </tbody>
     </table>
   );
 }
 
-/* ============================================================
-   Inline SVG glyphs — sized for footer line height (~13px).
-   Stroke uses the sheet's ink colour so they survive html2canvas.
-   ============================================================ */
+function DetailLine({ label, value, mono = false }: { label: string; value: string; mono?: boolean }) {
+  return (
+    <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: 5 }}>
+      <tbody>
+        <tr>
+          <td style={{ width: 56, padding: 0, verticalAlign: "top", fontSize: 12, fontWeight: 700, color: "hsl(220 18% 11%)" }}>{label}</td>
+          <td style={{ padding: 0, verticalAlign: "top", fontSize: 12, color: "hsl(220 18% 11%)", fontVariantNumeric: mono ? "tabular-nums" : undefined, overflowWrap: "break-word" }}>{value}</td>
+        </tr>
+      </tbody>
+    </table>
+  );
+}
+
+function FooterLine({ icon, text, mono = false }: { icon: ReactNode; text: string; mono?: boolean }) {
+  return (
+    <table style={{ borderCollapse: "collapse", tableLayout: "fixed", maxWidth: "100%" }}>
+      <tbody>
+        <tr>
+          <td style={{ width: 17, padding: 0, verticalAlign: "middle" }}>{icon}</td>
+          <td style={{ padding: "0 0 0 7px", verticalAlign: "middle", fontSize: 11, color: "hsl(220 18% 11%)", fontVariantNumeric: mono ? "tabular-nums" : undefined, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            {text}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  );
+}
+
 function PhoneGlyph() {
   return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#111317" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="hsl(220 18% 11%)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
     </svg>
   );
 }
 function MailGlyph() {
   return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#111317" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <rect x="3" y="5" width="18" height="14" rx="2"/>
-      <path d="m3 7 9 6 9-6"/>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="hsl(220 18% 11%)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
     </svg>
   );
 }
 function GlobeGlyph() {
   return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#111317" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <circle cx="12" cy="12" r="9"/>
-      <path d="M3 12h18"/>
-      <path d="M12 3a14 14 0 0 1 0 18"/>
-      <path d="M12 3a14 14 0 0 0 0 18"/>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="hsl(220 18% 11%)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18" />
+      <path d="M12 3a14 14 0 0 1 0 18" />
+      <path d="M12 3a14 14 0 0 0 0 18" />
     </svg>
   );
 }

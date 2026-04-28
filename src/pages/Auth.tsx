@@ -40,15 +40,6 @@ export default function Auth() {
       setBusy(false);
     }
   }
-
-  async function google() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}/` },
-    });
-    if (error) toast.error(error.message);
-  }
-
   return (
     <div className="min-h-screen grid lg:grid-cols-[1.1fr_1fr] bg-paper">
       {/* Editorial side */}

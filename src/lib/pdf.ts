@@ -1,46 +1,67 @@
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 import { jsPDF } from "jspdf";
 
 /**
- * Capture an A4 sheet element to a high-DPI PDF.
- * The element MUST be 794 x 1123 px (A4 @ 96 dpi).
+ * Capture an A4 sheet element (794 x 1123 CSS px) to a single-page A4 PDF.
  *
- * IMPORTANT — fonts:
- * html2canvas measures text with the *currently loaded* fonts. If a custom
- * font (Inter Tight, JetBrains Mono, etc.) hasn't finished loading when we
- * snapshot, the browser falls back to a metric-incompatible font and
- * html2canvas mis-positions glyphs — producing the classic "wordsruntogether"
- * artefact. We block on `document.fonts.ready` (and a small RAF) before
- * capturing to make sure the snapshot uses real metrics.
+ * Why html-to-image (and not html2canvas):
+ *   html2canvas re-implements its own text layout engine. With variable fonts
+ *   like Inter Tight that engine miscomputes glyph advance widths, producing
+ *   the classic artefacts the user reported — characters running into each
+ *   other AND extra phantom whitespace inside words ("CustomSpageWebsite",
+ *   "26042026", "R5000"). html-to-image instead serialises the live DOM into
+ *   an SVG <foreignObject>, so the browser itself does the text layout. Glyph
+ *   metrics come out identical to what's on screen.
  */
 export async function exportSheetToPDF(el: HTMLElement, fileName: string) {
-  // 1. Wait for webfonts to be fully loaded & laid out.
+  // Make sure every webfont the sheet uses is fully loaded & laid out before
+  // we serialise. Without this the snapshot can fall back to a metric-
+  // incompatible system font for one frame.
   if (typeof document !== "undefined" && (document as any).fonts?.ready) {
     try {
       await (document as any).fonts.ready;
+      // Explicitly load the exact families/weights used in the sheet so
+      // FontFaceSet doesn't lazy-skip any of them.
+      const fonts: any = (document as any).fonts;
+      await Promise.all([
+        fonts.load("400 13px 'Inter Tight'"),
+        fonts.load("600 13px 'Inter Tight'"),
+        fonts.load("700 13px 'Inter Tight'"),
+        fonts.load("800 18px 'Inter Tight'"),
+        fonts.load("400 12px 'JetBrains Mono'"),
+        fonts.load("700 10px 'JetBrains Mono'"),
+      ]);
     } catch {
-      /* ignore */
+      /* non-fatal */
     }
   }
-  // 2. One paint frame so layout stabilises with the real metrics.
+  // Two animation frames — first to apply any pending style, second to make
+  // sure the layout has settled with the real font metrics.
+  await new Promise<void>((r) => requestAnimationFrame(() => r()));
   await new Promise<void>((r) => requestAnimationFrame(() => r()));
 
-  const canvas = await html2canvas(el, {
-    scale: 3,                    // ~288 dpi — crisp print quality
+  const width = el.offsetWidth || 794;
+  const height = el.offsetHeight || 1123;
+
+  const dataUrl = await toPng(el, {
+    width,
+    height,
+    pixelRatio: 3, // ~288 dpi
+    cacheBust: true,
     backgroundColor: "#ffffff",
-    useCORS: true,
-    allowTaint: false,
-    logging: false,
-    letterRendering: true,       // preserves kerning / word spacing
-    windowWidth: el.scrollWidth,
-    windowHeight: el.scrollHeight,
-  } as any);
+    style: {
+      // Neutralise any transform inherited from the offscreen container so
+      // the snapshot is taken at 100% scale.
+      transform: "none",
+      transformOrigin: "top left",
+      margin: "0",
+    },
+    skipFonts: false,
+  });
 
   const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait", compress: true });
   const pageW = pdf.internal.pageSize.getWidth();
   const pageH = pdf.internal.pageSize.getHeight();
-  // PNG preserves crisp text edges; JPEG compression was softening them.
-  const img = canvas.toDataURL("image/png");
-  pdf.addImage(img, "PNG", 0, 0, pageW, pageH, undefined, "FAST");
+  pdf.addImage(dataUrl, "PNG", 0, 0, pageW, pageH, undefined, "FAST");
   pdf.save(fileName);
 }

@@ -237,19 +237,6 @@ export default function InvoiceEditor() {
     if (sid !== null) await downloadPDF();
   }
 
-  async function saveAsTemplate() {
-    if (!user) return;
-    const name = prompt("Template name?");
-    if (!name) return;
-    const { error } = await supabase.from("templates").insert({
-      user_id: user.id,
-      name,
-      data: { client_name: clientName, items },
-    });
-    if (error) toast.error(error.message);
-    else toast.success("Template saved");
-  }
-
   if (loading) {
     return (
       <AppShell eyebrow="Editing" title="Invoice">

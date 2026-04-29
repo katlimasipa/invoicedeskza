@@ -133,6 +133,9 @@ export default function Settings() {
         <p className="text-ink-soft text-[14px] max-w-prose">
           Set this once. Every new invoice will pull these details automatically. Currency is fixed to ZAR.
         </p>
+        <p className="text-ink-mute text-[12px] italic max-w-prose -mt-8">
+          Tip: tap <span className="not-italic font-medium text-ink">Save</span> after each section so nothing slips away.
+        </p>
 
         {/* Company */}
         <section>

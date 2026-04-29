@@ -11,7 +11,7 @@ import { InvoiceSheet, InvoiceData, InvoiceItemData } from "@/components/invoice
 import { useSignedUrl } from "@/lib/useSignedUrl";
 import { formatZAR, calcGrandTotal, calcRowTotal, clientToFilenameToken } from "@/lib/format";
 import { exportSheetToPDF } from "@/lib/pdf";
-import { Plus, Trash2, Download, Save, BookmarkPlus } from "lucide-react";
+import { Plus, Trash2, Download, Save } from "lucide-react";
 import { toast } from "sonner";
 
 type ItemRow = InvoiceItemData & { id?: string; original_unit_price?: number | string | null };

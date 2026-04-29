@@ -113,6 +113,7 @@ export default function Settings() {
     });
     setSaving(false);
     if (error) return toast.error(error.message);
+    if (draftKey) { try { localStorage.removeItem(draftKey); } catch {} }
     toast.success("Settings saved");
   }
 

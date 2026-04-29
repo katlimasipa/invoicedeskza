@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Plus, FileText, Layers, Settings as SettingsIcon } from "lucide-react";
+import { ArrowUpRight, Plus, FileText, Settings as SettingsIcon } from "lucide-react";
 import { format } from "date-fns";
 import { formatZAR } from "@/lib/format";
 

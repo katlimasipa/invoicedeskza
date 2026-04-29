@@ -9,7 +9,6 @@ import Index from "./pages/Index.tsx";
 import Auth from "./pages/Auth.tsx";
 import Invoices from "./pages/Invoices.tsx";
 import InvoiceEditor from "./pages/InvoiceEditor.tsx";
-import Templates from "./pages/Templates.tsx";
 import Settings from "./pages/Settings.tsx";
 import NotFound from "./pages/NotFound.tsx";
 

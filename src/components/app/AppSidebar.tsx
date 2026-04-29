@@ -11,7 +11,6 @@ const items = [
   { title: "Overview",   url: "/",           icon: LayoutGrid },
   { title: "Invoices",   url: "/invoices",   icon: FileText },
   { title: "New invoice",url: "/invoices/new", icon: Plus },
-  { title: "Templates",  url: "/templates",  icon: Layers },
   { title: "Settings",   url: "/settings",   icon: Settings },
 ];
 

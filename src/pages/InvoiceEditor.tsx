@@ -11,7 +11,7 @@ import { InvoiceSheet, InvoiceData, InvoiceItemData } from "@/components/invoice
 import { useSignedUrl } from "@/lib/useSignedUrl";
 import { formatZAR, calcGrandTotal, calcRowTotal, clientToFilenameToken } from "@/lib/format";
 import { exportSheetToPDF } from "@/lib/pdf";
-import { Plus, Trash2, Download, Save, BookmarkPlus } from "lucide-react";
+import { Plus, Trash2, Download, Save } from "lucide-react";
 import { toast } from "sonner";
 
 type ItemRow = InvoiceItemData & { id?: string; original_unit_price?: number | string | null };
@@ -237,19 +237,6 @@ export default function InvoiceEditor() {
     if (sid !== null) await downloadPDF();
   }
 
-  async function saveAsTemplate() {
-    if (!user) return;
-    const name = prompt("Template name?");
-    if (!name) return;
-    const { error } = await supabase.from("templates").insert({
-      user_id: user.id,
-      name,
-      data: { client_name: clientName, items },
-    });
-    if (error) toast.error(error.message);
-    else toast.success("Template saved");
-  }
-
   if (loading) {
     return (
       <AppShell eyebrow="Editing" title="Invoice">
@@ -264,9 +251,6 @@ export default function InvoiceEditor() {
       title={isNew ? "Draft invoice" : invoiceNumber}
       action={
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={saveAsTemplate} className="rounded-sm h-9 gap-1.5 hidden sm:flex">
-            <BookmarkPlus className="h-3.5 w-3.5" /> Template
-          </Button>
           <Button variant="outline" onClick={save} disabled={saving} className="rounded-sm h-9 gap-1.5">
             <Save className="h-3.5 w-3.5" /> {saving ? "Saving…" : "Save"}
           </Button>

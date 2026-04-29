@@ -65,8 +65,8 @@ export default function Invoices() {
         </div>
 
         <div className="border-t border-b border-rule">
-          <div className="grid grid-cols-[100px_1fr_auto_140px_auto] gap-4 items-center py-2 label-eyebrow text-[10px] border-b border-rule">
-            <span>№</span><span>client</span><span className="hidden sm:inline">date</span><span className="text-right">total</span><span></span>
+          <div className="grid grid-cols-[80px_1fr_auto_auto] sm:grid-cols-[100px_1fr_auto_140px_auto] gap-2 sm:gap-4 items-center py-2 label-eyebrow text-[10px] border-b border-rule">
+            <span>№</span><span>client</span><span className="hidden sm:inline">date</span><span className="text-right">total</span><span className="hidden sm:inline"></span>
           </div>
           {!loading && filtered.length === 0 && (
             <div className="py-16 text-center">
@@ -75,12 +75,12 @@ export default function Invoices() {
             </div>
           )}
           {filtered.map((inv) => (
-            <div key={inv.id} className="grid grid-cols-[100px_1fr_auto_140px_auto] gap-4 items-center py-3 border-b border-rule group hover:bg-surface-sunk -mx-2 px-2">
-              <Link to={`/invoices/${inv.id}/edit`} className="font-mono text-[11px] text-ink-mute hover:text-ink">{inv.invoice_number}</Link>
-              <Link to={`/invoices/${inv.id}/edit`} className="text-[14px] text-ink truncate hover:underline underline-offset-2">{inv.client_name}</Link>
+            <div key={inv.id} className="grid grid-cols-[80px_1fr_auto_auto] sm:grid-cols-[100px_1fr_auto_140px_auto] gap-2 sm:gap-4 items-center py-3 border-b border-rule group hover:bg-surface-sunk -mx-2 px-2">
+              <Link to={`/invoices/${inv.id}/edit`} className="font-mono text-[11px] text-ink-mute hover:text-ink truncate">{inv.invoice_number}</Link>
+              <Link to={`/invoices/${inv.id}/edit`} className="text-[13px] sm:text-[14px] text-ink truncate hover:underline underline-offset-2 min-w-0">{inv.client_name}</Link>
               <span className="font-mono text-[11px] text-ink-mute hidden sm:inline">{format(new Date(inv.invoice_date), "dd MMM ’yy")}</span>
-              <span className="font-mono text-[13px] text-ink text-right tabular-nums">{formatZAR(inv.total_due)}</span>
-              <button onClick={() => remove(inv.id)} className="text-ink-faint hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity p-1">
+              <span className="font-mono text-[12px] sm:text-[13px] text-ink text-right tabular-nums whitespace-nowrap">{formatZAR(inv.total_due)}</span>
+              <button onClick={() => remove(inv.id)} className="text-ink-faint hover:text-destructive sm:opacity-0 sm:group-hover:opacity-100 transition-opacity p-1">
                 <Trash2 className="h-3.5 w-3.5" />
               </button>
             </div>

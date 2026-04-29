@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Plus, FileText, Layers, Settings as SettingsIcon } from "lucide-react";
+import { ArrowUpRight, Plus, FileText, Settings as SettingsIcon } from "lucide-react";
 import { format } from "date-fns";
 import { formatZAR } from "@/lib/format";
 
@@ -100,9 +100,8 @@ export default function Dashboard() {
           <section>
             <h2 className="font-display text-xl tracking-tight mb-4">Quick actions</h2>
             <div className="space-y-px bg-rule border border-rule">
-              <ActionRow to="/invoices/new" icon={Plus} title="New invoice" hint="from blank or template" />
+              <ActionRow to="/invoices/new" icon={Plus} title="New invoice" hint="from blank" />
               <ActionRow to="/invoices" icon={FileText} title="All invoices" hint="search · edit · re-export" />
-              <ActionRow to="/templates" icon={Layers} title="Templates" hint="duplicate & reuse" />
               <ActionRow to="/settings" icon={SettingsIcon} title="Settings" hint="logo · bank · signature" />
             </div>
           </section>

@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutGrid, FileText, Plus, Layers, Settings, LogOut } from "lucide-react";
+import { LayoutGrid, FileText, Plus, Settings, LogOut } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter, useSidebar,
@@ -11,7 +11,6 @@ const items = [
   { title: "Overview",   url: "/",           icon: LayoutGrid },
   { title: "Invoices",   url: "/invoices",   icon: FileText },
   { title: "New invoice",url: "/invoices/new", icon: Plus },
-  { title: "Templates",  url: "/templates",  icon: Layers },
   { title: "Settings",   url: "/settings",   icon: Settings },
 ];
 

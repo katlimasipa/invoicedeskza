@@ -100,9 +100,8 @@ export default function Dashboard() {
           <section>
             <h2 className="font-display text-xl tracking-tight mb-4">Quick actions</h2>
             <div className="space-y-px bg-rule border border-rule">
-              <ActionRow to="/invoices/new" icon={Plus} title="New invoice" hint="from blank or template" />
+              <ActionRow to="/invoices/new" icon={Plus} title="New invoice" hint="from blank" />
               <ActionRow to="/invoices" icon={FileText} title="All invoices" hint="search · edit · re-export" />
-              <ActionRow to="/templates" icon={Layers} title="Templates" hint="duplicate & reuse" />
               <ActionRow to="/settings" icon={SettingsIcon} title="Settings" hint="logo · bank · signature" />
             </div>
           </section>

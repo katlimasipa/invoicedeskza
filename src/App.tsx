@@ -27,7 +27,6 @@ const App = () => (
             <Route path="/invoices" element={<RequireAuth><Invoices /></RequireAuth>} />
             <Route path="/invoices/new" element={<RequireAuth><InvoiceEditor /></RequireAuth>} />
             <Route path="/invoices/:id/edit" element={<RequireAuth><InvoiceEditor /></RequireAuth>} />
-            <Route path="/templates" element={<RequireAuth><Templates /></RequireAuth>} />
             <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
             <Route path="*" element={<NotFound />} />
           </Routes>

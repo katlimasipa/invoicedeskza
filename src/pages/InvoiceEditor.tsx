@@ -149,9 +149,16 @@ export default function InvoiceEditor() {
       let number = invoiceNumber;
 
       if (isNew) {
-        const { data: numData, error: numErr } = await supabase.rpc("next_invoice_number", { _user_id: user.id });
-        if (numErr) throw numErr;
-        number = numData as string;
+        // Only auto-assign if user left it blank or kept the placeholder (e.g. "2026····")
+        const typed = invoiceNumber.trim();
+        const isPlaceholder = !typed || /^[·•]+$/.test(typed) || /····/.test(typed);
+        if (isPlaceholder) {
+          const { data: numData, error: numErr } = await supabase.rpc("next_invoice_number", { _user_id: user.id });
+          if (numErr) throw numErr;
+          number = numData as string;
+        } else {
+          number = typed;
+        }
 
         const { data: inv, error } = await supabase.from("invoices").insert({
           user_id: user.id,
@@ -172,6 +179,7 @@ export default function InvoiceEditor() {
         savedId = inv.id;
       } else {
         const { error } = await supabase.from("invoices").update({
+          invoice_number: invoiceNumber.trim() || undefined,
           invoice_date: invoiceDate,
           client_name: clientName,
           company_name: companyName,
@@ -183,6 +191,7 @@ export default function InvoiceEditor() {
           bank_account_number: bankAccountNumber,
           total_due: grand,
         }).eq("id", id!);
+        number = invoiceNumber.trim() || number;
         if (error) throw error;
         // wipe & reinsert items
         await supabase.from("invoice_items").delete().eq("invoice_id", id!);

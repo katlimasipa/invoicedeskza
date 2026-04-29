@@ -50,9 +50,9 @@ export default function Auth() {
         </div>
 
         <div className="max-w-md space-y-6">
-          <div className="label-eyebrow">№ 0001 · since today</div>
+          <div className="label-eyebrow">the desk · vol. i</div>
           <h1 className="display text-5xl leading-[1.05] text-ink">
-            Invoices that<br/>look like you<br/><em className="not-italic" style={{fontStyle:"italic"}}>mean it.</em>
+            Send invoices<br/>that get<br/><em className="not-italic" style={{fontStyle:"italic"}}>paid faster.</em>
           </h1>
           <p className="text-ink-soft text-[15px] leading-relaxed max-w-sm">
             A quiet, precise tool for South African freelancers and agencies. Save your details once, generate print-ready PDFs in seconds.
@@ -72,7 +72,7 @@ export default function Auth() {
         </div>
 
         <div className="space-y-2">
-          <div className="label-eyebrow text-[10px]">Built in Cape Town · Designed for the rand</div>
+          <div className="label-eyebrow text-[10px]">Designed for the rand</div>
           <a
             href="https://architeq.co.za"
             target="_blank"

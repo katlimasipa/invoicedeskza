@@ -30,8 +30,10 @@ export default function Settings() {
   const logoInput = useRef<HTMLInputElement>(null);
   const sigInput = useRef<HTMLInputElement>(null);
 
+  const draftKey = user ? `company_settings_draft:${user.id}` : null;
+
   useEffect(() => {
-    if (!user) return;
+    if (!user || !draftKey) return;
     (async () => {
       const { data } = await supabase.from("company_settings").select("*").eq("user_id", user.id).maybeSingle();
       if (data) {
@@ -45,9 +47,35 @@ export default function Settings() {
         setLogoPath(data.logo_path);
         setSignaturePath(data.signature_path);
       }
+      // Restore unsaved draft (overrides server values if present)
+      try {
+        const raw = localStorage.getItem(draftKey);
+        if (raw) {
+          const d = JSON.parse(raw);
+          if (typeof d.companyName === "string") setCompanyName(d.companyName);
+          if (typeof d.phone === "string") setPhone(d.phone);
+          if (typeof d.email === "string") setEmail(d.email);
+          if (typeof d.website === "string") setWebsite(d.website);
+          if (typeof d.bankName === "string") setBankName(d.bankName);
+          if (typeof d.bankAccountName === "string") setBankAccountName(d.bankAccountName);
+          if (typeof d.bankAccountNumber === "string") setBankAccountNumber(d.bankAccountNumber);
+          if (Object.keys(d).length) toast("Restored unsaved changes");
+        }
+      } catch {}
       setLoading(false);
     })();
-  }, [user]);
+  }, [user, draftKey]);
+
+  // Persist draft on every change (survives tab switches, app backgrounding, refreshes)
+  useEffect(() => {
+    if (!draftKey || loading) return;
+    try {
+      localStorage.setItem(
+        draftKey,
+        JSON.stringify({ companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber }),
+      );
+    } catch {}
+  }, [draftKey, loading, companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber]);
 
   async function uploadFile(bucket: "logos" | "signatures", file: File): Promise<string | null> {
     if (!user) return null;
@@ -85,6 +113,7 @@ export default function Settings() {
     });
     setSaving(false);
     if (error) return toast.error(error.message);
+    if (draftKey) { try { localStorage.removeItem(draftKey); } catch {} }
     toast.success("Settings saved");
   }
 

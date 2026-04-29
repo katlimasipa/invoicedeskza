@@ -264,9 +264,6 @@ export default function InvoiceEditor() {
       title={isNew ? "Draft invoice" : invoiceNumber}
       action={
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={saveAsTemplate} className="rounded-sm h-9 gap-1.5 hidden sm:flex">
-            <BookmarkPlus className="h-3.5 w-3.5" /> Template
-          </Button>
           <Button variant="outline" onClick={save} disabled={saving} className="rounded-sm h-9 gap-1.5">
             <Save className="h-3.5 w-3.5" /> {saving ? "Saving…" : "Save"}
           </Button>

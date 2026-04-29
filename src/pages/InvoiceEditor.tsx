@@ -149,9 +149,16 @@ export default function InvoiceEditor() {
       let number = invoiceNumber;
 
       if (isNew) {
-        const { data: numData, error: numErr } = await supabase.rpc("next_invoice_number", { _user_id: user.id });
-        if (numErr) throw numErr;
-        number = numData as string;
+        // Only auto-assign if user left it blank or kept the placeholder (e.g. "2026····")
+        const typed = invoiceNumber.trim();
+        const isPlaceholder = !typed || /^[·•]+$/.test(typed) || /····/.test(typed);
+        if (isPlaceholder) {
+          const { data: numData, error: numErr } = await supabase.rpc("next_invoice_number", { _user_id: user.id });
+          if (numErr) throw numErr;
+          number = numData as string;
+        } else {
+          number = typed;
+        }
 
         const { data: inv, error } = await supabase.from("invoices").insert({
           user_id: user.id,

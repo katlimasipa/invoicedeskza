@@ -45,9 +45,13 @@ export default function Settings() {
         setBankName(data.bank_name ?? "");
         setBankAccountName(data.bank_account_name ?? "");
         setBankAccountNumber(data.bank_account_number ?? "");
-        setQuoteValidity(data.quote_validity ?? "");
         setLogoPath(data.logo_path);
         setSignaturePath(data.signature_path);
+      }
+      // Load quote validity from localStorage
+      const cachedValidity = localStorage.getItem("quote_validity_default");
+      if (cachedValidity) {
+        setQuoteValidity(cachedValidity);
       }
       // Restore unsaved draft (overrides server values if present)
       try {
@@ -110,13 +114,15 @@ export default function Settings() {
       bank_name: bankName,
       bank_account_name: bankAccountName,
       bank_account_number: bankAccountNumber,
-      quote_validity: quoteValidity,
       logo_path: logoPath,
       signature_path: signaturePath,
       currency: "ZAR",
     });
     setSaving(false);
     if (error) return toast.error(error.message);
+    
+    // Save quote validity to local storage
+    localStorage.setItem("quote_validity_default", quoteValidity);
     if (draftKey) { try { localStorage.removeItem(draftKey); } catch {} }
     toast.success("Settings saved");
   }

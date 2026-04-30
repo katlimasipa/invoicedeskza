@@ -26,6 +26,7 @@ export type Database = {
           invoice_counter: number
           logo_path: string | null
           phone: string | null
+          quote_validity: string | null
           signature_path: string | null
           updated_at: string
           user_id: string
@@ -42,6 +43,7 @@ export type Database = {
           invoice_counter?: number
           logo_path?: string | null
           phone?: string | null
+          quote_validity?: string | null
           signature_path?: string | null
           updated_at?: string
           user_id: string
@@ -58,6 +60,7 @@ export type Database = {
           invoice_counter?: number
           logo_path?: string | null
           phone?: string | null
+          quote_validity?: string | null
           signature_path?: string | null
           updated_at?: string
           user_id?: string
@@ -131,6 +134,7 @@ export type Database = {
           logo_path: string | null
           notes: string | null
           phone: string | null
+          quote_validity: string | null
           signature_path: string | null
           status: string
           total_due: number
@@ -153,6 +157,7 @@ export type Database = {
           logo_path?: string | null
           notes?: string | null
           phone?: string | null
+          quote_validity?: string | null
           signature_path?: string | null
           status?: string
           total_due?: number
@@ -175,6 +180,7 @@ export type Database = {
           logo_path?: string | null
           notes?: string | null
           phone?: string | null
+          quote_validity?: string | null
           signature_path?: string | null
           status?: string
           total_due?: number

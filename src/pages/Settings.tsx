@@ -21,6 +21,7 @@ export default function Settings() {
   const [bankName, setBankName] = useState("");
   const [bankAccountName, setBankAccountName] = useState("");
   const [bankAccountNumber, setBankAccountNumber] = useState("");
+  const [quoteValidity, setQuoteValidity] = useState("");
   const [logoPath, setLogoPath] = useState<string | null>(null);
   const [signaturePath, setSignaturePath] = useState<string | null>(null);
 
@@ -44,6 +45,7 @@ export default function Settings() {
         setBankName(data.bank_name ?? "");
         setBankAccountName(data.bank_account_name ?? "");
         setBankAccountNumber(data.bank_account_number ?? "");
+        setQuoteValidity(data.quote_validity ?? "");
         setLogoPath(data.logo_path);
         setSignaturePath(data.signature_path);
       }
@@ -59,6 +61,7 @@ export default function Settings() {
           if (typeof d.bankName === "string") setBankName(d.bankName);
           if (typeof d.bankAccountName === "string") setBankAccountName(d.bankAccountName);
           if (typeof d.bankAccountNumber === "string") setBankAccountNumber(d.bankAccountNumber);
+          if (typeof d.quoteValidity === "string") setQuoteValidity(d.quoteValidity);
           if (Object.keys(d).length) toast("Restored unsaved changes");
         }
       } catch {}
@@ -72,10 +75,10 @@ export default function Settings() {
     try {
       localStorage.setItem(
         draftKey,
-        JSON.stringify({ companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber }),
+        JSON.stringify({ companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber, quoteValidity }),
       );
     } catch {}
-  }, [draftKey, loading, companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber]);
+  }, [draftKey, loading, companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber, quoteValidity]);
 
   async function uploadFile(bucket: "logos" | "signatures", file: File): Promise<string | null> {
     if (!user) return null;
@@ -107,6 +110,7 @@ export default function Settings() {
       bank_name: bankName,
       bank_account_name: bankAccountName,
       bank_account_number: bankAccountNumber,
+      quote_validity: quoteValidity,
       logo_path: logoPath,
       signature_path: signaturePath,
       currency: "ZAR",
@@ -178,6 +182,14 @@ export default function Settings() {
             <FieldR label="Account name"><Input value={bankAccountName} onChange={(e) => setBankAccountName(e.target.value)} className="rounded-sm" /></FieldR>
             <FieldR label="Bank"><Input value={bankName} onChange={(e) => setBankName(e.target.value)} className="rounded-sm" /></FieldR>
             <FieldR label="Account number" full><Input value={bankAccountNumber} onChange={(e) => setBankAccountNumber(e.target.value)} className="rounded-sm font-mono" /></FieldR>
+          </div>
+        </section>
+
+        {/* Quote Settings */}
+        <section>
+          <div className="label-eyebrow mb-4">Quote Settings</div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <FieldR label="Validity period" full><Input value={quoteValidity} onChange={(e) => setQuoteValidity(e.target.value)} className="rounded-sm" placeholder="e.g. Valid for 30 days" /></FieldR>
           </div>
         </section>
 

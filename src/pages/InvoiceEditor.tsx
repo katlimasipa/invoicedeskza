@@ -43,6 +43,7 @@ export default function InvoiceEditor() {
   const [bankName, setBankName] = useState("");
   const [bankAccountName, setBankAccountName] = useState("");
   const [bankAccountNumber, setBankAccountNumber] = useState("");
+  const [quoteValidity, setQuoteValidity] = useState("");
 
   const sheetRef = useRef<HTMLDivElement>(null);
 
@@ -69,6 +70,7 @@ export default function InvoiceEditor() {
           setBankName(settings.bank_name ?? "");
           setBankAccountName(settings.bank_account_name ?? "");
           setBankAccountNumber(settings.bank_account_number ?? "");
+          setQuoteValidity(settings.quote_validity ?? "");
         }
         // Provisional invoice number — finalised on save via RPC
         setInvoiceNumber(`${new Date().getFullYear()}····`);
@@ -101,6 +103,7 @@ export default function InvoiceEditor() {
         setBankName(inv.bank_name ?? "");
         setBankAccountName(inv.bank_account_name ?? "");
         setBankAccountNumber(inv.bank_account_number ?? "");
+        setQuoteValidity(inv.quote_validity ?? "");
         setItems((its ?? []).map((r: any) => ({
           id: r.id,
           service: r.service,
@@ -127,6 +130,7 @@ export default function InvoiceEditor() {
     bank_name: bankName,
     bank_account_name: bankAccountName,
     bank_account_number: bankAccountNumber,
+    quote_validity: quoteValidity,
     items,
   };
 
@@ -172,6 +176,7 @@ export default function InvoiceEditor() {
           bank_name: bankName,
           bank_account_name: bankAccountName,
           bank_account_number: bankAccountNumber,
+          quote_validity: quoteValidity,
           total_due: grand,
           status: "issued",
         }).select("id").single();
@@ -189,6 +194,7 @@ export default function InvoiceEditor() {
           bank_name: bankName,
           bank_account_name: bankAccountName,
           bank_account_number: bankAccountNumber,
+          quote_validity: quoteValidity,
           total_due: grand,
         }).eq("id", id!);
         number = invoiceNumber.trim() || number;

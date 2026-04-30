@@ -191,11 +191,11 @@ export default function Settings() {
           </div>
         </section>
 
-        {/* Quote Settings */}
+        {/* Terms & Conditions */}
         <section>
-          <div className="label-eyebrow mb-4">Quote Settings</div>
+          <div className="label-eyebrow mb-4">Terms & Conditions</div>
           <div className="grid sm:grid-cols-2 gap-4">
-            <FieldR label="Validity period" full><Input value={quoteValidity} onChange={(e) => setQuoteValidity(e.target.value)} className="rounded-sm" placeholder="e.g. Valid for 30 days" /></FieldR>
+            <FieldR label="Default text" full><Input value={quoteValidity} onChange={(e) => setQuoteValidity(e.target.value)} className="rounded-sm" placeholder="e.g. Valid for 30 days" /></FieldR>
           </div>
         </section>
 

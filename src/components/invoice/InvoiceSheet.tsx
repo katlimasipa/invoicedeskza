@@ -209,7 +209,7 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
                 <DetailLine label="Acc no" value={data.bank_account_number || "—"} mono />
                 {data.quote_validity && (
                   <div style={{ marginTop: 12 }}>
-                    <div style={{ fontFamily: mono, fontSize: 10.5, fontWeight: 700, color: mute, marginBottom: 4 }}>VALIDITY PERIOD</div>
+                    <div style={{ fontFamily: mono, fontSize: 10.5, fontWeight: 700, color: mute, marginBottom: 4 }}>Terms & Conditions</div>
                     <div style={{ fontSize: 12, color: ink, whiteSpace: "pre-wrap" }}>{data.quote_validity}</div>
                   </div>
                 )}

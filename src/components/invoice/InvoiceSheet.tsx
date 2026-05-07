@@ -27,6 +27,8 @@ export type InvoiceData = {
   bank_account_name?: string | null;
   bank_account_number?: string | null;
 
+  project_description?: string | null;
+
   items: InvoiceItemData[];
 };
 

@@ -304,6 +304,16 @@ export default function InvoiceEditor() {
           </section>
 
           <section>
+            <div className="label-eyebrow mb-3">Project description <span className="normal-case text-ink-faint">— optional</span></div>
+            <Textarea
+              value={projectDescription}
+              onChange={(e) => setProjectDescription(e.target.value)}
+              placeholder="A short summary of the work — appears above the line items on the PDF."
+              className="rounded-sm min-h-[88px] text-[13px]"
+            />
+          </section>
+
+          <section>
             <div className="flex items-center justify-between mb-3">
               <div className="label-eyebrow">Line items</div>
               <button onClick={addItem} className="label-eyebrow flex items-center gap-1 hover:text-ink">

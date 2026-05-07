@@ -176,6 +176,7 @@ export default function InvoiceEditor() {
           bank_name: bankName,
           bank_account_name: bankAccountName,
           bank_account_number: bankAccountNumber,
+          project_description: projectDescription || null,
           total_due: grand,
           status: "issued",
         }).select("id").single();

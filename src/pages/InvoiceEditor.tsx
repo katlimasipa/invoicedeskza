@@ -32,6 +32,7 @@ export default function InvoiceEditor() {
   const [invoiceDate, setInvoiceDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [clientName, setClientName] = useState("");
   const [items, setItems] = useState<ItemRow[]>([{ service: "", note: "", qty: 1, unit_price: 0 }]);
+  const [projectDescription, setProjectDescription] = useState("");
 
   // Snapshot fields (from settings on new, from invoice row on edit)
   const [companyName, setCompanyName] = useState("");

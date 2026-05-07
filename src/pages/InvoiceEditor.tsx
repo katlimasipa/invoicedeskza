@@ -103,6 +103,7 @@ export default function InvoiceEditor() {
         setBankName(inv.bank_name ?? "");
         setBankAccountName(inv.bank_account_name ?? "");
         setBankAccountNumber(inv.bank_account_number ?? "");
+        setProjectDescription((inv as any).project_description ?? "");
         setItems((its ?? []).map((r: any) => ({
           id: r.id,
           service: r.service,

@@ -79,8 +79,9 @@ export default function InvoiceEditor() {
           const { data: tpl } = await supabase.from("templates").select("data").eq("id", templateId).maybeSingle();
           const d: any = tpl?.data;
           if (d) {
-            if (d.client_name) setClientName(d.client_name);
+          if (d.client_name) setClientName(d.client_name);
             if (Array.isArray(d.items)) setItems(d.items);
+            if (d.project_description) setProjectDescription(d.project_description);
           }
         }
         setLoading(false);

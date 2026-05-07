@@ -145,6 +145,15 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
         </tbody>
       </table>
 
+      {data.project_description && data.project_description.trim() ? (
+        <div style={{ marginBottom: sectionGap, borderTop: `1px solid ${faint}`, paddingTop: 14 }}>
+          <div style={{ fontFamily: mono, fontSize: 10.5, fontWeight: 700, color: mute, marginBottom: 8 }}>PROJECT</div>
+          <div style={{ fontSize: bodyFs, color: ink, lineHeight: 1.55, whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
+            {data.project_description}
+          </div>
+        </div>
+      ) : null}
+
       <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: sectionGap }}>
         <colgroup>
           <col style={{ width: "49%" }} />

@@ -32,6 +32,7 @@ export default function InvoiceEditor() {
   const [invoiceDate, setInvoiceDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [clientName, setClientName] = useState("");
   const [items, setItems] = useState<ItemRow[]>([{ service: "", note: "", qty: 1, unit_price: 0 }]);
+  const [projectDescription, setProjectDescription] = useState("");
 
   // Snapshot fields (from settings on new, from invoice row on edit)
   const [companyName, setCompanyName] = useState("");
@@ -43,7 +44,6 @@ export default function InvoiceEditor() {
   const [bankName, setBankName] = useState("");
   const [bankAccountName, setBankAccountName] = useState("");
   const [bankAccountNumber, setBankAccountNumber] = useState("");
-  const [quoteValidity, setQuoteValidity] = useState("");
 
   const sheetRef = useRef<HTMLDivElement>(null);
 
@@ -71,11 +71,6 @@ export default function InvoiceEditor() {
           setBankAccountName(settings.bank_account_name ?? "");
           setBankAccountNumber(settings.bank_account_number ?? "");
         }
-        
-        const cachedValidity = localStorage.getItem("quote_validity_default");
-        if (cachedValidity) {
-          setQuoteValidity(cachedValidity);
-        }
         // Provisional invoice number — finalised on save via RPC
         setInvoiceNumber(`${new Date().getFullYear()}····`);
 
@@ -84,8 +79,9 @@ export default function InvoiceEditor() {
           const { data: tpl } = await supabase.from("templates").select("data").eq("id", templateId).maybeSingle();
           const d: any = tpl?.data;
           if (d) {
-            if (d.client_name) setClientName(d.client_name);
+          if (d.client_name) setClientName(d.client_name);
             if (Array.isArray(d.items)) setItems(d.items);
+            if (d.project_description) setProjectDescription(d.project_description);
           }
         }
         setLoading(false);
@@ -107,12 +103,7 @@ export default function InvoiceEditor() {
         setBankName(inv.bank_name ?? "");
         setBankAccountName(inv.bank_account_name ?? "");
         setBankAccountNumber(inv.bank_account_number ?? "");
-        
-        const cachedValidity = localStorage.getItem("quote_validity_default");
-        if (cachedValidity) {
-          setQuoteValidity(cachedValidity);
-        }
-        
+        setProjectDescription((inv as any).project_description ?? "");
         setItems((its ?? []).map((r: any) => ({
           id: r.id,
           service: r.service,
@@ -139,7 +130,7 @@ export default function InvoiceEditor() {
     bank_name: bankName,
     bank_account_name: bankAccountName,
     bank_account_number: bankAccountNumber,
-    quote_validity: quoteValidity,
+    project_description: projectDescription,
     items,
   };
 
@@ -185,6 +176,7 @@ export default function InvoiceEditor() {
           bank_name: bankName,
           bank_account_name: bankAccountName,
           bank_account_number: bankAccountNumber,
+          project_description: projectDescription || null,
           total_due: grand,
           status: "issued",
         }).select("id").single();
@@ -202,6 +194,7 @@ export default function InvoiceEditor() {
           bank_name: bankName,
           bank_account_name: bankAccountName,
           bank_account_number: bankAccountNumber,
+          project_description: projectDescription || null,
           total_due: grand,
         }).eq("id", id!);
         number = invoiceNumber.trim() || number;
@@ -308,6 +301,16 @@ export default function InvoiceEditor() {
                 Leave blank to auto-assign the next sequential number on save.
               </p>
             </div>
+          </section>
+
+          <section>
+            <div className="label-eyebrow mb-3">Project description <span className="normal-case text-ink-faint">— optional</span></div>
+            <Textarea
+              value={projectDescription}
+              onChange={(e) => setProjectDescription(e.target.value)}
+              placeholder="A short summary of the work — appears above the line items on the PDF."
+              className="rounded-sm min-h-[88px] text-[13px]"
+            />
           </section>
 
           <section>

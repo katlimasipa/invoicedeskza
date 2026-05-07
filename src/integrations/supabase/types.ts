@@ -131,6 +131,7 @@ export type Database = {
           logo_path: string | null
           notes: string | null
           phone: string | null
+          project_description: string | null
           signature_path: string | null
           status: string
           total_due: number
@@ -153,6 +154,7 @@ export type Database = {
           logo_path?: string | null
           notes?: string | null
           phone?: string | null
+          project_description?: string | null
           signature_path?: string | null
           status?: string
           total_due?: number
@@ -175,6 +177,7 @@ export type Database = {
           logo_path?: string | null
           notes?: string | null
           phone?: string | null
+          project_description?: string | null
           signature_path?: string | null
           status?: string
           total_due?: number

@@ -26,7 +26,8 @@ export type InvoiceData = {
   bank_name?: string | null;
   bank_account_name?: string | null;
   bank_account_number?: string | null;
-  quote_validity?: string | null;
+
+  project_description?: string | null;
 
   items: InvoiceItemData[];
 };
@@ -144,6 +145,15 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
         </tbody>
       </table>
 
+      {data.project_description && data.project_description.trim() ? (
+        <div style={{ marginBottom: sectionGap, borderTop: `1px solid ${faint}`, paddingTop: 14 }}>
+          <div style={{ fontFamily: mono, fontSize: 10.5, fontWeight: 700, color: mute, marginBottom: 8 }}>PROJECT</div>
+          <div style={{ fontSize: bodyFs, color: ink, lineHeight: 1.55, whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
+            {data.project_description}
+          </div>
+        </div>
+      ) : null}
+
       <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: sectionGap }}>
         <colgroup>
           <col style={{ width: "49%" }} />
@@ -207,12 +217,6 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
                 <DetailLine label="Name" value={data.bank_account_name || "—"} />
                 <DetailLine label="Bank" value={data.bank_name || "—"} />
                 <DetailLine label="Acc no" value={data.bank_account_number || "—"} mono />
-                {data.quote_validity && (
-                  <div style={{ marginTop: 12 }}>
-                    <div style={{ fontFamily: mono, fontSize: 10.5, fontWeight: 700, color: mute, marginBottom: 4 }}>Terms & Conditions</div>
-                    <div style={{ fontSize: 12, color: ink, whiteSpace: "pre-wrap" }}>{data.quote_validity}</div>
-                  </div>
-                )}
               </div>
             </td>
             <td style={{ width: "48%", padding: 0, verticalAlign: "top" }}>

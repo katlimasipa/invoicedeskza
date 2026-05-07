@@ -21,7 +21,6 @@ export default function Settings() {
   const [bankName, setBankName] = useState("");
   const [bankAccountName, setBankAccountName] = useState("");
   const [bankAccountNumber, setBankAccountNumber] = useState("");
-  const [quoteValidity, setQuoteValidity] = useState("");
   const [logoPath, setLogoPath] = useState<string | null>(null);
   const [signaturePath, setSignaturePath] = useState<string | null>(null);
 
@@ -48,11 +47,6 @@ export default function Settings() {
         setLogoPath(data.logo_path);
         setSignaturePath(data.signature_path);
       }
-      // Load quote validity from localStorage
-      const cachedValidity = localStorage.getItem("quote_validity_default");
-      if (cachedValidity) {
-        setQuoteValidity(cachedValidity);
-      }
       // Restore unsaved draft (overrides server values if present)
       try {
         const raw = localStorage.getItem(draftKey);
@@ -65,7 +59,6 @@ export default function Settings() {
           if (typeof d.bankName === "string") setBankName(d.bankName);
           if (typeof d.bankAccountName === "string") setBankAccountName(d.bankAccountName);
           if (typeof d.bankAccountNumber === "string") setBankAccountNumber(d.bankAccountNumber);
-          if (typeof d.quoteValidity === "string") setQuoteValidity(d.quoteValidity);
           if (Object.keys(d).length) toast("Restored unsaved changes");
         }
       } catch {}
@@ -79,10 +72,10 @@ export default function Settings() {
     try {
       localStorage.setItem(
         draftKey,
-        JSON.stringify({ companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber, quoteValidity }),
+        JSON.stringify({ companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber }),
       );
     } catch {}
-  }, [draftKey, loading, companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber, quoteValidity]);
+  }, [draftKey, loading, companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber]);
 
   async function uploadFile(bucket: "logos" | "signatures", file: File): Promise<string | null> {
     if (!user) return null;
@@ -120,9 +113,6 @@ export default function Settings() {
     });
     setSaving(false);
     if (error) return toast.error(error.message);
-    
-    // Save quote validity to local storage
-    localStorage.setItem("quote_validity_default", quoteValidity);
     if (draftKey) { try { localStorage.removeItem(draftKey); } catch {} }
     toast.success("Settings saved");
   }
@@ -188,14 +178,6 @@ export default function Settings() {
             <FieldR label="Account name"><Input value={bankAccountName} onChange={(e) => setBankAccountName(e.target.value)} className="rounded-sm" /></FieldR>
             <FieldR label="Bank"><Input value={bankName} onChange={(e) => setBankName(e.target.value)} className="rounded-sm" /></FieldR>
             <FieldR label="Account number" full><Input value={bankAccountNumber} onChange={(e) => setBankAccountNumber(e.target.value)} className="rounded-sm font-mono" /></FieldR>
-          </div>
-        </section>
-
-        {/* Terms & Conditions */}
-        <section>
-          <div className="label-eyebrow mb-4">Terms & Conditions</div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <FieldR label="Default text" full><Input value={quoteValidity} onChange={(e) => setQuoteValidity(e.target.value)} className="rounded-sm" placeholder="e.g. Valid for 30 days" /></FieldR>
           </div>
         </section>
 

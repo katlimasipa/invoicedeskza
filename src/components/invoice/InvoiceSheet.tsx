@@ -124,6 +124,11 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
             </td>
             <td style={{ width: "38%", verticalAlign: "middle", textAlign: "right", padding: 0 }}>
               <div style={{ fontWeight: 800, fontSize: 27, color: ink, lineHeight: 1 }}>INVOICE</div>
+              {data.address && data.address.trim() ? (
+                <div style={{ marginTop: 10, fontSize: 11, color: soft, lineHeight: 1.4, whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
+                  {data.address}
+                </div>
+              ) : null}
             </td>
           </tr>
         </tbody>

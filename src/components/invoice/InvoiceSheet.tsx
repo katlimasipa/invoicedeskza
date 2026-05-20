@@ -16,6 +16,7 @@ export type InvoiceData = {
   client_name: string;
 
   company_name?: string | null;
+  address?: string | null;
   logo_url?: string | null;
   signature_url?: string | null;
 

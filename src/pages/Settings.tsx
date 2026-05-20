@@ -107,7 +107,6 @@ export default function Settings() {
     const { error } = await supabase.from("company_settings").upsert({
       user_id: user.id,
       company_name: companyName,
-      address: address || null,
       phone, email, website,
       bank_name: bankName,
       bank_account_name: bankAccountName,
@@ -150,14 +149,6 @@ export default function Settings() {
             <FieldR label="Phone"><Input value={phone} onChange={(e) => setPhone(e.target.value)} className="rounded-sm" /></FieldR>
             <FieldR label="Email"><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-sm" /></FieldR>
             <FieldR label="Website" full><Input value={website} onChange={(e) => setWebsite(e.target.value)} className="rounded-sm" /></FieldR>
-            <FieldR label="Address" full>
-              <Textarea
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="123 Long Street&#10;Cape Town, 8001&#10;South Africa"
-                className="rounded-sm min-h-[88px] text-[13px]"
-              />
-            </FieldR>
           </div>
         </section>
 

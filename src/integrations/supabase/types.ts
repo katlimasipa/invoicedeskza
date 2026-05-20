@@ -16,7 +16,6 @@ export type Database = {
     Tables: {
       company_settings: {
         Row: {
-          address: string | null
           bank_account_name: string | null
           bank_account_number: string | null
           bank_name: string | null
@@ -33,7 +32,6 @@ export type Database = {
           website: string | null
         }
         Insert: {
-          address?: string | null
           bank_account_name?: string | null
           bank_account_number?: string | null
           bank_name?: string | null
@@ -50,7 +48,6 @@ export type Database = {
           website?: string | null
         }
         Update: {
-          address?: string | null
           bank_account_name?: string | null
           bank_account_number?: string | null
           bank_name?: string | null
@@ -120,10 +117,10 @@ export type Database = {
       }
       invoices: {
         Row: {
-          address: string | null
           bank_account_name: string | null
           bank_account_number: string | null
           bank_name: string | null
+          client_address: string | null
           client_name: string
           company_name: string | null
           created_at: string
@@ -144,10 +141,10 @@ export type Database = {
           website: string | null
         }
         Insert: {
-          address?: string | null
           bank_account_name?: string | null
           bank_account_number?: string | null
           bank_name?: string | null
+          client_address?: string | null
           client_name: string
           company_name?: string | null
           created_at?: string
@@ -168,10 +165,10 @@ export type Database = {
           website?: string | null
         }
         Update: {
-          address?: string | null
           bank_account_name?: string | null
           bank_account_number?: string | null
           bank_name?: string | null
+          client_address?: string | null
           client_name?: string
           company_name?: string | null
           created_at?: string

@@ -6,6 +6,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Upload, X } from "lucide-react";
 
@@ -149,6 +150,14 @@ export default function Settings() {
             <FieldR label="Phone"><Input value={phone} onChange={(e) => setPhone(e.target.value)} className="rounded-sm" /></FieldR>
             <FieldR label="Email"><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-sm" /></FieldR>
             <FieldR label="Website" full><Input value={website} onChange={(e) => setWebsite(e.target.value)} className="rounded-sm" /></FieldR>
+            <FieldR label="Address" full>
+              <Textarea
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="123 Long Street&#10;Cape Town, 8001&#10;South Africa"
+                className="rounded-sm min-h-[88px] text-[13px]"
+              />
+            </FieldR>
           </div>
         </section>
 

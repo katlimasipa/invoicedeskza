@@ -6,7 +6,6 @@ import { AppShell } from "@/components/app/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Upload, X } from "lucide-react";
 
@@ -16,7 +15,6 @@ export default function Settings() {
   const [saving, setSaving] = useState(false);
 
   const [companyName, setCompanyName] = useState("");
-  const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
@@ -40,7 +38,6 @@ export default function Settings() {
       const { data } = await supabase.from("company_settings").select("*").eq("user_id", user.id).maybeSingle();
       if (data) {
         setCompanyName(data.company_name ?? "");
-        setAddress((data as any).address ?? "");
         setPhone(data.phone ?? "");
         setEmail(data.email ?? "");
         setWebsite(data.website ?? "");
@@ -56,7 +53,6 @@ export default function Settings() {
         if (raw) {
           const d = JSON.parse(raw);
           if (typeof d.companyName === "string") setCompanyName(d.companyName);
-          if (typeof d.address === "string") setAddress(d.address);
           if (typeof d.phone === "string") setPhone(d.phone);
           if (typeof d.email === "string") setEmail(d.email);
           if (typeof d.website === "string") setWebsite(d.website);
@@ -76,10 +72,10 @@ export default function Settings() {
     try {
       localStorage.setItem(
         draftKey,
-        JSON.stringify({ companyName, address, phone, email, website, bankName, bankAccountName, bankAccountNumber }),
+        JSON.stringify({ companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber }),
       );
     } catch {}
-  }, [draftKey, loading, companyName, address, phone, email, website, bankName, bankAccountName, bankAccountNumber]);
+  }, [draftKey, loading, companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber]);
 
   async function uploadFile(bucket: "logos" | "signatures", file: File): Promise<string | null> {
     if (!user) return null;
@@ -107,7 +103,6 @@ export default function Settings() {
     const { error } = await supabase.from("company_settings").upsert({
       user_id: user.id,
       company_name: companyName,
-      address: address || null,
       phone, email, website,
       bank_name: bankName,
       bank_account_name: bankAccountName,
@@ -150,14 +145,6 @@ export default function Settings() {
             <FieldR label="Phone"><Input value={phone} onChange={(e) => setPhone(e.target.value)} className="rounded-sm" /></FieldR>
             <FieldR label="Email"><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="rounded-sm" /></FieldR>
             <FieldR label="Website" full><Input value={website} onChange={(e) => setWebsite(e.target.value)} className="rounded-sm" /></FieldR>
-            <FieldR label="Address" full>
-              <Textarea
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="123 Long Street&#10;Cape Town, 8001&#10;South Africa"
-                className="rounded-sm min-h-[88px] text-[13px]"
-              />
-            </FieldR>
           </div>
         </section>
 

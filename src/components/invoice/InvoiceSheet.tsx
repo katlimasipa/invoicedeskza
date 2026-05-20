@@ -16,7 +16,7 @@ export type InvoiceData = {
   client_name: string;
 
   company_name?: string | null;
-  address?: string | null;
+  client_address?: string | null;
   logo_url?: string | null;
   signature_url?: string | null;
 
@@ -124,11 +124,6 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
             </td>
             <td style={{ width: "38%", verticalAlign: "middle", textAlign: "right", padding: 0 }}>
               <div style={{ fontWeight: 800, fontSize: 27, color: ink, lineHeight: 1 }}>INVOICE</div>
-              {data.address && data.address.trim() ? (
-                <div style={{ marginTop: 10, fontSize: 11, color: soft, lineHeight: 1.4, whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
-                  {data.address}
-                </div>
-              ) : null}
             </td>
           </tr>
         </tbody>
@@ -142,6 +137,11 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
             <td style={{ width: "56%", padding: 0, verticalAlign: "top" }}>
               <div style={{ fontFamily: mono, fontSize: 10.5, fontWeight: 700, color: mute, marginBottom: 8 }}>INVOICE TO</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: ink, overflowWrap: "break-word" }}>{data.client_name || "—"}</div>
+              {data.client_address && data.client_address.trim() ? (
+                <div style={{ marginTop: 6, fontSize: 12, color: soft, lineHeight: 1.45, whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
+                  {data.client_address}
+                </div>
+              ) : null}
             </td>
             <td style={{ width: "44%", padding: 0, verticalAlign: "top" }}>
               <MetaRow label="Invoice No" value={data.invoice_number || "—"} />

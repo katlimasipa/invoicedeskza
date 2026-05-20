@@ -36,7 +36,7 @@ export default function InvoiceEditor() {
 
   // Snapshot fields (from settings on new, from invoice row on edit)
   const [companyName, setCompanyName] = useState("");
-  const [address, setAddress] = useState("");
+  const [clientAddress, setClientAddress] = useState("");
   const [logoPath, setLogoPath] = useState<string | null>(null);
   const [signaturePath, setSignaturePath] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
@@ -63,7 +63,6 @@ export default function InvoiceEditor() {
           .maybeSingle();
         if (settings) {
           setCompanyName(settings.company_name ?? "");
-          setAddress((settings as any).address ?? "");
           setLogoPath(settings.logo_path);
           setSignaturePath(settings.signature_path);
           setPhone(settings.phone ?? "");
@@ -97,7 +96,7 @@ export default function InvoiceEditor() {
         setInvoiceDate(inv.invoice_date);
         setClientName(inv.client_name);
         setCompanyName(inv.company_name ?? "");
-        setAddress((inv as any).address ?? "");
+        setClientAddress((inv as any).client_address ?? "");
         setLogoPath(inv.logo_path);
         setSignaturePath(inv.signature_path);
         setPhone(inv.phone ?? "");
@@ -127,7 +126,7 @@ export default function InvoiceEditor() {
     invoice_date: invoiceDate || new Date(),
     client_name: clientName,
     company_name: companyName,
-    address,
+    client_address: clientAddress,
     logo_url: logoUrl,
     signature_url: signatureUrl,
     phone, email, website,
@@ -174,7 +173,7 @@ export default function InvoiceEditor() {
           invoice_date: invoiceDate,
           client_name: clientName,
           company_name: companyName,
-          address: address || null,
+          client_address: clientAddress || null,
           logo_path: logoPath,
           signature_path: signaturePath,
           phone, email, website,
@@ -193,7 +192,7 @@ export default function InvoiceEditor() {
           invoice_date: invoiceDate,
           client_name: clientName,
           company_name: companyName,
-          address: address || null,
+          client_address: clientAddress || null,
           logo_path: logoPath,
           signature_path: signaturePath,
           phone, email, website,
@@ -289,6 +288,14 @@ export default function InvoiceEditor() {
             <div className="space-y-3">
               <Field label="Client name">
                 <Input value={clientName} onChange={(e) => setClientName(e.target.value)} className="rounded-sm" />
+              </Field>
+              <Field label="Client address — optional">
+                <Textarea
+                  value={clientAddress}
+                  onChange={(e) => setClientAddress(e.target.value)}
+                  placeholder="Street, city, postal code…"
+                  className="rounded-sm min-h-[72px] text-[13px]"
+                />
               </Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Invoice date">

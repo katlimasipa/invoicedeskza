@@ -120,8 +120,11 @@ export type Database = {
           bank_account_name: string | null
           bank_account_number: string | null
           bank_name: string | null
-          client_address: string | null
+          client_city: string | null
           client_name: string
+          client_postal_code: string | null
+          client_street: string | null
+          client_suburb: string | null
           company_name: string | null
           created_at: string
           currency: string
@@ -144,8 +147,11 @@ export type Database = {
           bank_account_name?: string | null
           bank_account_number?: string | null
           bank_name?: string | null
-          client_address?: string | null
+          client_city?: string | null
           client_name: string
+          client_postal_code?: string | null
+          client_street?: string | null
+          client_suburb?: string | null
           company_name?: string | null
           created_at?: string
           currency?: string
@@ -168,8 +174,11 @@ export type Database = {
           bank_account_name?: string | null
           bank_account_number?: string | null
           bank_name?: string | null
-          client_address?: string | null
+          client_city?: string | null
           client_name?: string
+          client_postal_code?: string | null
+          client_street?: string | null
+          client_suburb?: string | null
           company_name?: string | null
           created_at?: string
           currency?: string

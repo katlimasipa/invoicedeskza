@@ -16,7 +16,10 @@ export type InvoiceData = {
   client_name: string;
 
   company_name?: string | null;
-  client_address?: string | null;
+  client_street?: string | null;
+  client_suburb?: string | null;
+  client_city?: string | null;
+  client_postal_code?: string | null;
   logo_url?: string | null;
   signature_url?: string | null;
 
@@ -137,9 +140,24 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
             <td style={{ width: "56%", padding: 0, verticalAlign: "top" }}>
               <div style={{ fontFamily: mono, fontSize: 10.5, fontWeight: 700, color: mute, marginBottom: 8 }}>INVOICE TO</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: ink, overflowWrap: "break-word" }}>{data.client_name || "—"}</div>
-              {data.client_address && data.client_address.trim() ? (
-                <div style={{ marginTop: 6, fontSize: 12, color: soft, lineHeight: 1.45, whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
-                  {data.client_address}
+              {data.client_street && data.client_street.trim() ? (
+                <div style={{ marginTop: 6, fontSize: 12, color: soft, lineHeight: 1.45, overflowWrap: "break-word" }}>
+                  {data.client_street}
+                </div>
+              ) : null}
+              {data.client_suburb && data.client_suburb.trim() ? (
+                <div style={{ fontSize: 12, color: soft, lineHeight: 1.45, overflowWrap: "break-word" }}>
+                  {data.client_suburb}
+                </div>
+              ) : null}
+              {data.client_city && data.client_city.trim() ? (
+                <div style={{ fontSize: 12, color: soft, lineHeight: 1.45, overflowWrap: "break-word" }}>
+                  {data.client_city}
+                </div>
+              ) : null}
+              {data.client_postal_code && data.client_postal_code.trim() ? (
+                <div style={{ fontSize: 12, color: soft, lineHeight: 1.45, overflowWrap: "break-word" }}>
+                  {data.client_postal_code}
                 </div>
               ) : null}
             </td>

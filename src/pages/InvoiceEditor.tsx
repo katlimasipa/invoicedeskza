@@ -290,12 +290,7 @@ export default function InvoiceEditor() {
                 <Input value={clientName} onChange={(e) => setClientName(e.target.value)} className="rounded-sm" />
               </Field>
               <Field label="Client address — optional">
-                <Textarea
-                  value={clientAddress}
-                  onChange={(e) => setClientAddress(e.target.value)}
-                  placeholder="Street, city, postal code…"
-                  className="rounded-sm min-h-[72px] text-[13px]"
-                />
+                <AddressLines value={clientAddress} onChange={setClientAddress} />
               </Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Invoice date">

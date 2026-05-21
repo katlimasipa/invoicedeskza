@@ -290,12 +290,7 @@ export default function InvoiceEditor() {
                 <Input value={clientName} onChange={(e) => setClientName(e.target.value)} className="rounded-sm" />
               </Field>
               <Field label="Client address — optional">
-                <Textarea
-                  value={clientAddress}
-                  onChange={(e) => setClientAddress(e.target.value)}
-                  placeholder="Street, city, postal code…"
-                  className="rounded-sm min-h-[72px] text-[13px]"
-                />
+                <AddressLines value={clientAddress} onChange={setClientAddress} />
               </Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Invoice date">
@@ -458,5 +453,29 @@ function SmartNumberInput({
       placeholder={placeholder}
       className="rounded-sm h-9 font-mono text-[12px] px-2"
     />
+  );
+}
+
+function AddressLines({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const lines = (value ?? "").split("\n");
+  while (lines.length < 4) lines.push("");
+  const placeholders = ["Street", "City", "Postal code", "Country"];
+  const update = (i: number, v: string) => {
+    const next = [...lines];
+    next[i] = v;
+    onChange(next.join("\n").replace(/\n+$/, ""));
+  };
+  return (
+    <div className="space-y-2">
+      {lines.slice(0, 4).map((ln, i) => (
+        <Input
+          key={i}
+          value={ln}
+          onChange={(e) => update(i, e.target.value)}
+          placeholder={placeholders[i]}
+          className="rounded-sm h-9 text-[13px]"
+        />
+      ))}
+    </div>
   );
 }

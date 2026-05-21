@@ -455,3 +455,27 @@ function SmartNumberInput({
     />
   );
 }
+
+function AddressLines({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const lines = (value ?? "").split("\n");
+  while (lines.length < 4) lines.push("");
+  const placeholders = ["Street", "City", "Postal code", "Country"];
+  const update = (i: number, v: string) => {
+    const next = [...lines];
+    next[i] = v;
+    onChange(next.join("\n").replace(/\n+$/, ""));
+  };
+  return (
+    <div className="space-y-2">
+      {lines.slice(0, 4).map((ln, i) => (
+        <Input
+          key={i}
+          value={ln}
+          onChange={(e) => update(i, e.target.value)}
+          placeholder={placeholders[i]}
+          className="rounded-sm h-9 text-[13px]"
+        />
+      ))}
+    </div>
+  );
+}

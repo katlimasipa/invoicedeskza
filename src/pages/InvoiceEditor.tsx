@@ -36,7 +36,10 @@ export default function InvoiceEditor() {
 
   // Snapshot fields (from settings on new, from invoice row on edit)
   const [companyName, setCompanyName] = useState("");
-  const [clientAddress, setClientAddress] = useState("");
+  const [clientStreet, setClientStreet] = useState("");
+  const [clientSuburb, setClientSuburb] = useState("");
+  const [clientCity, setClientCity] = useState("");
+  const [clientPostalCode, setClientPostalCode] = useState("");
   const [logoPath, setLogoPath] = useState<string | null>(null);
   const [signaturePath, setSignaturePath] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
@@ -96,7 +99,10 @@ export default function InvoiceEditor() {
         setInvoiceDate(inv.invoice_date);
         setClientName(inv.client_name);
         setCompanyName(inv.company_name ?? "");
-        setClientAddress((inv as any).client_address ?? "");
+        setClientStreet(inv.client_street ?? "");
+        setClientSuburb(inv.client_suburb ?? "");
+        setClientCity(inv.client_city ?? "");
+        setClientPostalCode(inv.client_postal_code ?? "");
         setLogoPath(inv.logo_path);
         setSignaturePath(inv.signature_path);
         setPhone(inv.phone ?? "");
@@ -126,7 +132,10 @@ export default function InvoiceEditor() {
     invoice_date: invoiceDate || new Date(),
     client_name: clientName,
     company_name: companyName,
-    client_address: clientAddress,
+    client_street: clientStreet,
+    client_suburb: clientSuburb,
+    client_city: clientCity,
+    client_postal_code: clientPostalCode,
     logo_url: logoUrl,
     signature_url: signatureUrl,
     phone, email, website,
@@ -173,7 +182,10 @@ export default function InvoiceEditor() {
           invoice_date: invoiceDate,
           client_name: clientName,
           company_name: companyName,
-          client_address: clientAddress || null,
+          client_street: clientStreet || null,
+          client_suburb: clientSuburb || null,
+          client_city: clientCity || null,
+          client_postal_code: clientPostalCode || null,
           logo_path: logoPath,
           signature_path: signaturePath,
           phone, email, website,
@@ -192,7 +204,10 @@ export default function InvoiceEditor() {
           invoice_date: invoiceDate,
           client_name: clientName,
           company_name: companyName,
-          client_address: clientAddress || null,
+          client_street: clientStreet || null,
+          client_suburb: clientSuburb || null,
+          client_city: clientCity || null,
+          client_postal_code: clientPostalCode || null,
           logo_path: logoPath,
           signature_path: signaturePath,
           phone, email, website,
@@ -289,8 +304,19 @@ export default function InvoiceEditor() {
               <Field label="Client name">
                 <Input value={clientName} onChange={(e) => setClientName(e.target.value)} className="rounded-sm" />
               </Field>
-              <Field label="Client address — optional">
-                <AddressLines value={clientAddress} onChange={setClientAddress} />
+              <Field label="Street address">
+                <Input value={clientStreet} onChange={(e) => setClientStreet(e.target.value)} placeholder="123 Main Street" className="rounded-sm" />
+              </Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Suburb">
+                  <Input value={clientSuburb} onChange={(e) => setClientSuburb(e.target.value)} placeholder="Sandton" className="rounded-sm" />
+                </Field>
+                <Field label="City">
+                  <Input value={clientCity} onChange={(e) => setClientCity(e.target.value)} placeholder="Johannesburg" className="rounded-sm" />
+                </Field>
+              </div>
+              <Field label="Postal code">
+                <Input value={clientPostalCode} onChange={(e) => setClientPostalCode(e.target.value)} placeholder="2196" className="rounded-sm" />
               </Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Invoice date">

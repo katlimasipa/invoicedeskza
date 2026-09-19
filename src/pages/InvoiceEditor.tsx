@@ -62,6 +62,16 @@ export default function InvoiceEditor() {
     if (!user) return;
     (async () => {
       if (isNew) {
+        // Reset to a blank invoice (clicking "New invoice" while already
+        // on /invoices/new doesn't remount, so clear stale state first)
+        setClientName("");
+        setItems([{ service: "", note: "", qty: 1, unit_price: 0 }]);
+        setProjectDescription("");
+        setClientStreet("");
+        setClientSuburb("");
+        setClientCity("");
+        setClientPostalCode("");
+        setInvoiceDate(new Date().toISOString().slice(0, 10));
         const { data: settings } = await supabase
           .from("company_settings")
           .select("*")

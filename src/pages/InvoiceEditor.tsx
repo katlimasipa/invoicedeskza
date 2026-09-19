@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { InvoiceSheet, InvoiceData, InvoiceItemData } from "@/components/invoice/InvoiceSheet";
 import { useSignedUrl } from "@/lib/useSignedUrl";
 import { formatZAR, calcGrandTotal, calcRowTotal, clientToFilenameToken } from "@/lib/format";
@@ -33,6 +34,8 @@ export default function InvoiceEditor() {
   const [clientName, setClientName] = useState("");
   const [items, setItems] = useState<ItemRow[]>([{ service: "", note: "", qty: 1, unit_price: 0 }]);
   const [projectDescription, setProjectDescription] = useState("");
+  const [termsText, setTermsText] = useState("");
+  const [termsEnabled, setTermsEnabled] = useState(true);
 
   // Snapshot fields (from settings on new, from invoice row on edit)
   const [companyName, setCompanyName] = useState("");
@@ -74,6 +77,8 @@ export default function InvoiceEditor() {
           setBankName(settings.bank_name ?? "");
           setBankAccountName(settings.bank_account_name ?? "");
           setBankAccountNumber(settings.bank_account_number ?? "");
+          setTermsText((settings as any).terms_text ?? "");
+          setTermsEnabled((settings as any).terms_enabled ?? true);
         }
         // Provisional invoice number — finalised on save via RPC
         setInvoiceNumber(`${new Date().getFullYear()}····`);
@@ -112,6 +117,8 @@ export default function InvoiceEditor() {
         setBankAccountName(inv.bank_account_name ?? "");
         setBankAccountNumber(inv.bank_account_number ?? "");
         setProjectDescription((inv as any).project_description ?? "");
+        setTermsText((inv as any).terms_text ?? "");
+        setTermsEnabled((inv as any).terms_enabled ?? true);
         setItems((its ?? []).map((r: any) => ({
           id: r.id,
           service: r.service,
@@ -143,6 +150,8 @@ export default function InvoiceEditor() {
     bank_account_name: bankAccountName,
     bank_account_number: bankAccountNumber,
     project_description: projectDescription,
+    terms_text: termsText,
+    terms_enabled: termsEnabled,
     items,
   };
 
@@ -193,6 +202,8 @@ export default function InvoiceEditor() {
           bank_account_name: bankAccountName,
           bank_account_number: bankAccountNumber,
           project_description: projectDescription || null,
+          terms_text: termsText || null,
+          terms_enabled: termsEnabled,
           total_due: grand,
           status: "issued",
         }).select("id").single();
@@ -215,6 +226,8 @@ export default function InvoiceEditor() {
           bank_account_name: bankAccountName,
           bank_account_number: bankAccountNumber,
           project_description: projectDescription || null,
+          terms_text: termsText || null,
+          terms_enabled: termsEnabled,
           total_due: grand,
         }).eq("id", id!);
         number = invoiceNumber.trim() || number;
@@ -405,6 +418,26 @@ export default function InvoiceEditor() {
               <span className="font-display text-lg">Total Due</span>
               <span className="font-mono text-xl tabular-nums">{formatZAR(grand)}</span>
             </div>
+          </section>
+
+          <section>
+            <div className="flex items-center justify-between mb-3 gap-4">
+              <div className="label-eyebrow">Terms &amp; conditions</div>
+              <label className="flex items-center gap-2 text-[11px] text-ink-soft">
+                Show on invoice
+                <Switch checked={termsEnabled} onCheckedChange={setTermsEnabled} />
+              </label>
+            </div>
+            <Textarea
+              value={termsText}
+              onChange={(e) => setTermsText(e.target.value)}
+              placeholder="Payment terms for this invoice — appears just above the bank details."
+              className="rounded-sm min-h-[88px] text-[13px]"
+              disabled={!termsEnabled}
+            />
+            <p className="text-[11px] text-ink-mute mt-2 leading-snug">
+              Pre-filled from <a href="/settings" className="underline underline-offset-2 hover:text-ink">Settings</a>; edits here apply to this invoice only.
+            </p>
           </section>
 
           <section className="text-[11px] text-ink-mute leading-relaxed border-t border-rule pt-4">

@@ -1,0 +1,2 @@
+ALTER TABLE public.company_settings ADD COLUMN IF NOT EXISTS terms_text text, ADD COLUMN IF NOT EXISTS terms_enabled boolean NOT NULL DEFAULT true;
+ALTER TABLE public.invoices ADD COLUMN IF NOT EXISTS terms_text text, ADD COLUMN IF NOT EXISTS terms_enabled boolean NOT NULL DEFAULT true;

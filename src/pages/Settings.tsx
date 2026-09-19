@@ -6,6 +6,8 @@ import { AppShell } from "@/components/app/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Upload, X } from "lucide-react";
 
@@ -21,6 +23,8 @@ export default function Settings() {
   const [bankName, setBankName] = useState("");
   const [bankAccountName, setBankAccountName] = useState("");
   const [bankAccountNumber, setBankAccountNumber] = useState("");
+  const [termsText, setTermsText] = useState("");
+  const [termsEnabled, setTermsEnabled] = useState(true);
   const [logoPath, setLogoPath] = useState<string | null>(null);
   const [signaturePath, setSignaturePath] = useState<string | null>(null);
 
@@ -44,6 +48,8 @@ export default function Settings() {
         setBankName(data.bank_name ?? "");
         setBankAccountName(data.bank_account_name ?? "");
         setBankAccountNumber(data.bank_account_number ?? "");
+        setTermsText((data as any).terms_text ?? "");
+        setTermsEnabled((data as any).terms_enabled ?? true);
         setLogoPath(data.logo_path);
         setSignaturePath(data.signature_path);
       }
@@ -59,6 +65,8 @@ export default function Settings() {
           if (typeof d.bankName === "string") setBankName(d.bankName);
           if (typeof d.bankAccountName === "string") setBankAccountName(d.bankAccountName);
           if (typeof d.bankAccountNumber === "string") setBankAccountNumber(d.bankAccountNumber);
+          if (typeof d.termsText === "string") setTermsText(d.termsText);
+          if (typeof d.termsEnabled === "boolean") setTermsEnabled(d.termsEnabled);
           if (Object.keys(d).length) toast("Restored unsaved changes");
         }
       } catch {}
@@ -72,10 +80,10 @@ export default function Settings() {
     try {
       localStorage.setItem(
         draftKey,
-        JSON.stringify({ companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber }),
+        JSON.stringify({ companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber, termsText, termsEnabled }),
       );
     } catch {}
-  }, [draftKey, loading, companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber]);
+  }, [draftKey, loading, companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber, termsText, termsEnabled]);
 
   async function uploadFile(bucket: "logos" | "signatures", file: File): Promise<string | null> {
     if (!user) return null;
@@ -109,6 +117,8 @@ export default function Settings() {
       bank_account_number: bankAccountNumber,
       logo_path: logoPath,
       signature_path: signaturePath,
+      terms_text: termsText || null,
+      terms_enabled: termsEnabled,
       currency: "ZAR",
     });
     setSaving(false);
@@ -169,6 +179,26 @@ export default function Settings() {
             />
             <input ref={sigInput} type="file" accept="image/*" hidden onChange={onSig} />
           </div>
+        </section>
+
+        {/* Terms */}
+        <section>
+          <div className="flex items-center justify-between mb-4 gap-4">
+            <div className="label-eyebrow">Terms &amp; conditions</div>
+            <label className="flex items-center gap-2 text-[11px] text-ink-soft">
+              Show on invoices
+              <Switch checked={termsEnabled} onCheckedChange={setTermsEnabled} />
+            </label>
+          </div>
+          <Textarea
+            value={termsText}
+            onChange={(e) => setTermsText(e.target.value)}
+            placeholder="e.g. Payment due within 7 days of invoice date. Work commences on receipt of a 50% deposit."
+            className="rounded-sm min-h-[110px] text-[13px]"
+          />
+          <p className="text-[11px] text-ink-mute mt-2 leading-snug">
+            These appear just above the bank details on every new invoice. You can edit or hide them on each individual invoice.
+          </p>
         </section>
 
         {/* Bank */}

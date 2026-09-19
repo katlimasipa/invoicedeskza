@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { InvoiceSheet, InvoiceData, InvoiceItemData } from "@/components/invoice/InvoiceSheet";
 import { useSignedUrl } from "@/lib/useSignedUrl";
 import { formatZAR, calcGrandTotal, calcRowTotal, clientToFilenameToken } from "@/lib/format";
@@ -33,6 +34,8 @@ export default function InvoiceEditor() {
   const [clientName, setClientName] = useState("");
   const [items, setItems] = useState<ItemRow[]>([{ service: "", note: "", qty: 1, unit_price: 0 }]);
   const [projectDescription, setProjectDescription] = useState("");
+  const [termsText, setTermsText] = useState("");
+  const [termsEnabled, setTermsEnabled] = useState(true);
 
   // Snapshot fields (from settings on new, from invoice row on edit)
   const [companyName, setCompanyName] = useState("");

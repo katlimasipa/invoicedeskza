@@ -420,6 +420,26 @@ export default function InvoiceEditor() {
             </div>
           </section>
 
+          <section>
+            <div className="flex items-center justify-between mb-3 gap-4">
+              <div className="label-eyebrow">Terms &amp; conditions</div>
+              <label className="flex items-center gap-2 text-[11px] text-ink-soft">
+                Show on invoice
+                <Switch checked={termsEnabled} onCheckedChange={setTermsEnabled} />
+              </label>
+            </div>
+            <Textarea
+              value={termsText}
+              onChange={(e) => setTermsText(e.target.value)}
+              placeholder="Payment terms for this invoice — appears just above the bank details."
+              className="rounded-sm min-h-[88px] text-[13px]"
+              disabled={!termsEnabled}
+            />
+            <p className="text-[11px] text-ink-mute mt-2 leading-snug">
+              Pre-filled from <a href="/settings" className="underline underline-offset-2 hover:text-ink">Settings</a>; edits here apply to this invoice only.
+            </p>
+          </section>
+
           <section className="text-[11px] text-ink-mute leading-relaxed border-t border-rule pt-4">
             Company info, logo, bank details and signature come from{" "}
             <a href="/settings" className="underline underline-offset-2 hover:text-ink">Settings</a>. Saved invoices keep their snapshot, so editing settings later won't alter past invoices.

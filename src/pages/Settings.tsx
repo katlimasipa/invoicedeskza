@@ -181,6 +181,26 @@ export default function Settings() {
           </div>
         </section>
 
+        {/* Terms */}
+        <section>
+          <div className="flex items-center justify-between mb-4 gap-4">
+            <div className="label-eyebrow">Terms &amp; conditions</div>
+            <label className="flex items-center gap-2 text-[11px] text-ink-soft">
+              Show on invoices
+              <Switch checked={termsEnabled} onCheckedChange={setTermsEnabled} />
+            </label>
+          </div>
+          <Textarea
+            value={termsText}
+            onChange={(e) => setTermsText(e.target.value)}
+            placeholder="e.g. Payment due within 7 days of invoice date. Work commences on receipt of a 50% deposit."
+            className="rounded-sm min-h-[110px] text-[13px]"
+          />
+          <p className="text-[11px] text-ink-mute mt-2 leading-snug">
+            These appear just above the bank details on every new invoice. You can edit or hide them on each individual invoice.
+          </p>
+        </section>
+
         {/* Bank */}
         <section>
           <div className="label-eyebrow mb-4">Bank account</div>

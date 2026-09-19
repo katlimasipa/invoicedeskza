@@ -65,6 +65,8 @@ export default function Settings() {
           if (typeof d.bankName === "string") setBankName(d.bankName);
           if (typeof d.bankAccountName === "string") setBankAccountName(d.bankAccountName);
           if (typeof d.bankAccountNumber === "string") setBankAccountNumber(d.bankAccountNumber);
+          if (typeof d.termsText === "string") setTermsText(d.termsText);
+          if (typeof d.termsEnabled === "boolean") setTermsEnabled(d.termsEnabled);
           if (Object.keys(d).length) toast("Restored unsaved changes");
         }
       } catch {}
@@ -78,10 +80,10 @@ export default function Settings() {
     try {
       localStorage.setItem(
         draftKey,
-        JSON.stringify({ companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber }),
+        JSON.stringify({ companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber, termsText, termsEnabled }),
       );
     } catch {}
-  }, [draftKey, loading, companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber]);
+  }, [draftKey, loading, companyName, phone, email, website, bankName, bankAccountName, bankAccountNumber, termsText, termsEnabled]);
 
   async function uploadFile(bucket: "logos" | "signatures", file: File): Promise<string | null> {
     if (!user) return null;
@@ -115,6 +117,8 @@ export default function Settings() {
       bank_account_number: bankAccountNumber,
       logo_path: logoPath,
       signature_path: signaturePath,
+      terms_text: termsText || null,
+      terms_enabled: termsEnabled,
       currency: "ZAR",
     });
     setSaving(false);

@@ -202,6 +202,8 @@ export default function InvoiceEditor() {
           bank_account_name: bankAccountName,
           bank_account_number: bankAccountNumber,
           project_description: projectDescription || null,
+          terms_text: termsText || null,
+          terms_enabled: termsEnabled,
           total_due: grand,
           status: "issued",
         }).select("id").single();
@@ -224,6 +226,8 @@ export default function InvoiceEditor() {
           bank_account_name: bankAccountName,
           bank_account_number: bankAccountNumber,
           project_description: projectDescription || null,
+          terms_text: termsText || null,
+          terms_enabled: termsEnabled,
           total_due: grand,
         }).eq("id", id!);
         number = invoiceNumber.trim() || number;

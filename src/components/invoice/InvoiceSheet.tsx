@@ -32,6 +32,8 @@ export type InvoiceData = {
   bank_account_number?: string | null;
 
   project_description?: string | null;
+  terms_text?: string | null;
+  terms_enabled?: boolean | null;
 
   items: InvoiceItemData[];
 };
@@ -231,6 +233,15 @@ export const InvoiceSheet = forwardRef<HTMLDivElement, { data: InvoiceData }>(({
       </table>
 
       <div style={{ flex: 1, minHeight: dense ? 12 : 28 }} />
+
+      {data.terms_enabled !== false && data.terms_text && data.terms_text.trim() ? (
+        <div style={{ marginBottom: dense ? 16 : 22, borderTop: `1px solid ${faint}`, paddingTop: 12 }}>
+          <div style={{ fontFamily: mono, fontSize: 10.5, fontWeight: 700, color: mute, marginBottom: 7 }}>TERMS &amp; CONDITIONS</div>
+          <div style={{ fontSize: noteFs + 0.5, color: soft, lineHeight: 1.5, whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
+            {data.terms_text}
+          </div>
+        </div>
+      ) : null}
 
       <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: dense ? 20 : 30 }}>
         <tbody>

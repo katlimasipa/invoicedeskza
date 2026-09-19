@@ -23,6 +23,8 @@ export default function Settings() {
   const [bankName, setBankName] = useState("");
   const [bankAccountName, setBankAccountName] = useState("");
   const [bankAccountNumber, setBankAccountNumber] = useState("");
+  const [termsText, setTermsText] = useState("");
+  const [termsEnabled, setTermsEnabled] = useState(true);
   const [logoPath, setLogoPath] = useState<string | null>(null);
   const [signaturePath, setSignaturePath] = useState<string | null>(null);
 
@@ -46,6 +48,8 @@ export default function Settings() {
         setBankName(data.bank_name ?? "");
         setBankAccountName(data.bank_account_name ?? "");
         setBankAccountNumber(data.bank_account_number ?? "");
+        setTermsText((data as any).terms_text ?? "");
+        setTermsEnabled((data as any).terms_enabled ?? true);
         setLogoPath(data.logo_path);
         setSignaturePath(data.signature_path);
       }

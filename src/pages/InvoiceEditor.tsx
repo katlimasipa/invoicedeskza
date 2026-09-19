@@ -77,6 +77,8 @@ export default function InvoiceEditor() {
           setBankName(settings.bank_name ?? "");
           setBankAccountName(settings.bank_account_name ?? "");
           setBankAccountNumber(settings.bank_account_number ?? "");
+          setTermsText((settings as any).terms_text ?? "");
+          setTermsEnabled((settings as any).terms_enabled ?? true);
         }
         // Provisional invoice number — finalised on save via RPC
         setInvoiceNumber(`${new Date().getFullYear()}····`);
@@ -115,6 +117,8 @@ export default function InvoiceEditor() {
         setBankAccountName(inv.bank_account_name ?? "");
         setBankAccountNumber(inv.bank_account_number ?? "");
         setProjectDescription((inv as any).project_description ?? "");
+        setTermsText((inv as any).terms_text ?? "");
+        setTermsEnabled((inv as any).terms_enabled ?? true);
         setItems((its ?? []).map((r: any) => ({
           id: r.id,
           service: r.service,
@@ -146,6 +150,8 @@ export default function InvoiceEditor() {
     bank_account_name: bankAccountName,
     bank_account_number: bankAccountNumber,
     project_description: projectDescription,
+    terms_text: termsText,
+    terms_enabled: termsEnabled,
     items,
   };
 

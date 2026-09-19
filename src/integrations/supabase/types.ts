@@ -27,6 +27,8 @@ export type Database = {
           logo_path: string | null
           phone: string | null
           signature_path: string | null
+          terms_enabled: boolean
+          terms_text: string | null
           updated_at: string
           user_id: string
           website: string | null
@@ -43,6 +45,8 @@ export type Database = {
           logo_path?: string | null
           phone?: string | null
           signature_path?: string | null
+          terms_enabled?: boolean
+          terms_text?: string | null
           updated_at?: string
           user_id: string
           website?: string | null
@@ -59,6 +63,8 @@ export type Database = {
           logo_path?: string | null
           phone?: string | null
           signature_path?: string | null
+          terms_enabled?: boolean
+          terms_text?: string | null
           updated_at?: string
           user_id?: string
           website?: string | null
@@ -138,6 +144,8 @@ export type Database = {
           project_description: string | null
           signature_path: string | null
           status: string
+          terms_enabled: boolean
+          terms_text: string | null
           total_due: number
           updated_at: string
           user_id: string
@@ -165,6 +173,8 @@ export type Database = {
           project_description?: string | null
           signature_path?: string | null
           status?: string
+          terms_enabled?: boolean
+          terms_text?: string | null
           total_due?: number
           updated_at?: string
           user_id: string
@@ -192,6 +202,8 @@ export type Database = {
           project_description?: string | null
           signature_path?: string | null
           status?: string
+          terms_enabled?: boolean
+          terms_text?: string | null
           total_due?: number
           updated_at?: string
           user_id?: string

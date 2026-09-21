@@ -1,4 +1,3 @@
-import logoAsset from "@/assets/invoice-desk-logo.png.asset.json";
 import { cn } from "@/lib/utils";
 
 type BrandLogoProps = {
@@ -9,8 +8,10 @@ type BrandLogoProps = {
 export function BrandLogo({ className, compact = false }: BrandLogoProps) {
   return (
     <img
-      src={logoAsset.url}
+      src="/invoice-desk-logo.png"
       alt="InvoiceDesk"
+      width={832}
+      height={184}
       className={cn(
         "block object-contain object-left",
         compact ? "h-7 w-7 object-cover object-left" : "h-8 w-auto max-w-[190px]",

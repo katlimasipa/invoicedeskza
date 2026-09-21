@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { BrandLogo } from "@/components/app/BrandLogo";
 
 const items = [
   { title: "Overview",   url: "/",           icon: LayoutGrid },
@@ -26,12 +27,10 @@ export function AppSidebar() {
       <SidebarContent className="bg-sidebar">
         {/* Brand */}
         <div className={cn("flex items-center gap-2 px-3 pt-4 pb-3", collapsed && "justify-center px-0")}>
-          <div className="h-7 w-7 rounded-sm bg-ink text-paper grid place-items-center font-display text-[15px] leading-none">
-            Iₐ
-          </div>
+          <BrandLogo compact={collapsed} className={collapsed ? undefined : "h-7 max-w-[145px]"} />
           {!collapsed && (
-            <div className="flex flex-col leading-tight">
-              <span className="font-display text-[15px] tracking-tight">Invoice Desk</span>
+            <div className="flex flex-col leading-tight sr-only">
+              <span>InvoiceDesk</span>
               <span className="label-eyebrow text-[9px]">a ledger, but modern</span>
             </div>
           )}

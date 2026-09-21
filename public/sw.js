@@ -1,5 +1,5 @@
 /* Invoice Desk service worker — basic offline support */
-const VERSION = "v1";
+const VERSION = "v2-brand";
 const STATIC_CACHE = `static-${VERSION}`;
 const RUNTIME_CACHE = `runtime-${VERSION}`;
 
@@ -8,6 +8,7 @@ const PRECACHE_URLS = [
   "/manifest.webmanifest",
   "/icon-192.png",
   "/icon-512.png",
+  "/icon-maskable-512.png",
   "/apple-touch-icon.png",
 ];
 

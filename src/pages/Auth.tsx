@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { BrandLogo } from "@/components/app/BrandLogo";
 
 export default function Auth() {
   const { user } = useAuth();
@@ -45,8 +46,7 @@ export default function Auth() {
       {/* Editorial side */}
       <div className="hidden lg:flex flex-col justify-between p-12 border-r border-rule">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-sm bg-ink text-paper grid place-items-center font-display text-base">Iₐ</div>
-          <span className="font-display text-base tracking-tight">Invoice Desk</span>
+          <BrandLogo className="h-9 max-w-[220px]" />
         </div>
 
         <div className="max-w-md space-y-6">
@@ -88,8 +88,7 @@ export default function Auth() {
       <div className="flex items-center justify-center p-6 sm:p-12">
         <div className="w-full max-w-sm">
           <div className="lg:hidden mb-8 flex items-center gap-2">
-            <div className="h-7 w-7 rounded-sm bg-ink text-paper grid place-items-center font-display text-sm">Iₐ</div>
-            <span className="font-display text-base">Invoice Desk</span>
+            <BrandLogo className="h-8 max-w-[190px]" />
           </div>
 
           <div className="label-eyebrow mb-2">{mode === "signup" ? "create account" : "sign in"}</div>

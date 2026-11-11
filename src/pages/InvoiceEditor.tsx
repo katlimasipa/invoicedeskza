@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -12,7 +12,7 @@ import { InvoiceSheet, InvoiceData, InvoiceItemData } from "@/components/invoice
 import { useSignedUrl } from "@/lib/useSignedUrl";
 import { formatZAR, calcGrandTotal, calcRowTotal, clientToFilenameToken } from "@/lib/format";
 import { exportSheetToPDF } from "@/lib/pdf";
-import { Plus, Trash2, Download, Save } from "lucide-react";
+import { Plus, Trash2, Download, Save, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 type ItemRow = InvoiceItemData & { id?: string; original_unit_price?: number | string | null };
@@ -28,6 +28,7 @@ export default function InvoiceEditor() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [applyingSettings, setApplyingSettings] = useState(false);
 
   const [invoiceNumber, setInvoiceNumber] = useState("");
   const [invoiceDate, setInvoiceDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -141,6 +142,39 @@ export default function InvoiceEditor() {
       }
     })();
   }, [user, id, isNew, templateId, nav]);
+
+  /**
+   * Pull the latest company_settings and apply them to the current invoice's
+   * snapshot fields. This lets changes in Settings show up in this invoice's PDF.
+   */
+  const applyLatestSettings = useCallback(async () => {
+    if (!user) return;
+    setApplyingSettings(true);
+    try {
+      const { data: settings, error } = await supabase
+        .from("company_settings")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (error) throw error;
+      if (!settings) { toast("No settings saved yet — visit Settings first."); return; }
+      setCompanyName(settings.company_name ?? "");
+      setLogoPath(settings.logo_path);
+      setSignaturePath(settings.signature_path);
+      setPhone(settings.phone ?? "");
+      setEmail(settings.email ?? "");
+      setWebsite(settings.website ?? "");
+      setBankName(settings.bank_name ?? "");
+      setBankAccountName(settings.bank_account_name ?? "");
+      setBankAccountNumber(settings.bank_account_number ?? "");
+      // Only overwrite terms if invoice hasn't been customised (i.e. they still match — user can opt in)
+      toast.success("Settings applied — save or export to persist.");
+    } catch (e: any) {
+      toast.error(e.message ?? "Failed to fetch settings");
+    } finally {
+      setApplyingSettings(false);
+    }
+  }, [user]);
 
   const grand = useMemo(() => calcGrandTotal(items), [items]);
 
@@ -309,6 +343,18 @@ export default function InvoiceEditor() {
       title={isNew ? "Draft invoice" : invoiceNumber}
       action={
         <div className="flex items-center gap-2">
+          {!isNew && (
+            <Button
+              variant="ghost"
+              onClick={applyLatestSettings}
+              disabled={applyingSettings}
+              title="Pull latest company info & branding from Settings into this invoice"
+              className="rounded-sm h-9 gap-1.5 text-ink-soft hover:text-ink"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 ${applyingSettings ? "animate-spin" : ""}`} />
+              <span className="hidden sm:inline">{applyingSettings ? "Applying…" : "Apply settings"}</span>
+            </Button>
+          )}
           <Button variant="outline" onClick={save} disabled={saving} className="rounded-sm h-9 gap-1.5">
             <Save className="h-3.5 w-3.5" /> {saving ? "Saving…" : "Save"}
           </Button>
@@ -452,7 +498,8 @@ export default function InvoiceEditor() {
 
           <section className="text-[11px] text-ink-mute leading-relaxed border-t border-rule pt-4">
             Company info, logo, bank details and signature come from{" "}
-            <a href="/settings" className="underline underline-offset-2 hover:text-ink">Settings</a>. Saved invoices keep their snapshot, so editing settings later won't alter past invoices.
+            <a href="/settings" className="underline underline-offset-2 hover:text-ink">Settings</a>.
+            Use <strong className="text-ink-soft font-medium">Apply settings</strong> (top right) to refresh this invoice with your latest branding and company details before exporting.
           </section>
         </div>
 
@@ -524,4 +571,3 @@ function SmartNumberInput({
     />
   );
 }
-
